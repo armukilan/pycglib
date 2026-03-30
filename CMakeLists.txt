@@ -14,8 +14,8 @@ find_package(pybind11 CONFIG REQUIRED)
 if(WIN32)
     # Windows - installed via vcpkg in GitHub Actions
     find_package(CGAL REQUIRED HINTS
-        "C:/vcpkg/installed/x64-windows/share/cgal"
         "$ENV{CGAL_DIR}"
+        "C:/vcpkg/installed/x64-windows/share/cgal"
     )
 elseif(APPLE)
     # Mac - installed via homebrew
