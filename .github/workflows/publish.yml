@@ -36,14 +36,19 @@ jobs:
             dnf install -y CGAL-devel boost-devel gmp-devel mpfr-devel
 
           # Install vcpkg and CGAL inside cibuildwheel Windows environment
-          # Checks if vcpkg already exists before cloning to avoid errors
+          # Also verify CGAL was installed correctly
           CIBW_BEFORE_ALL_WINDOWS: |
             if not exist C:/vcpkg git clone https://github.com/microsoft/vcpkg C:/vcpkg
             if not exist C:/vcpkg/vcpkg.exe C:/vcpkg/bootstrap-vcpkg.bat
             C:/vcpkg/vcpkg install cgal:x64-windows
+            echo "Verifying CGAL installation..."
+            dir C:/vcpkg/installed/x64-windows/share/cgal/
 
-          # Pass cmake toolchain and CGAL paths directly to scikit-build-core
-          CIBW_CONFIG_SETTINGS_WINDOWS: "cmake.args=-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake;-DCGAL_DIR=C:/vcpkg/installed/x64-windows/share/cgal"
+          # Pass cmake args using space separator instead of semicolon
+          CIBW_CONFIG_SETTINGS_WINDOWS: >
+            cmake.args=
+            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+            -DCGAL_DIR=C:/vcpkg/installed/x64-windows/share/cgal
 
           CIBW_BEFORE_BUILD: pip install scikit-build-core pybind11
 
