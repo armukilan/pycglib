@@ -24,37 +24,63 @@ jobs:
 
       - name: Install CGAL on Windows
         if: runner.os == 'Windows'
-          run: |
-            git clone https://github.com/microsoft/vcpkg C:/vcpkg
-            C:/vcpkg/bootstrap-vcpkg.bat
-            C:/vcpkg/vcpkg install cgal:x64-windows
-          shell: cmd
+        run: |
+          git clone https://github.com/microsoft/vcpkg C:/vcpkg
+          C:/vcpkg/bootstrap-vcpkg.bat
+          C:/vcpkg/vcpkg install cgal:x64-windows
+        shell: cmd
 
-        - name: Build wheels
-          uses: pypa/cibuildwheel@v2.21.3
-          env:
-            CIBW_BUILD: cp310-* cp311-* cp312-* cp313-*
-            CIBW_SKIP: "*-win32 *-manylinux_i686 *-musllinux*"
-            CIBW_ARCHS: auto64
-            CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.21.3
+        env:
+          # --------------------------------------------------------
+          # SUPPORTED PLATFORMS
+          # cp310 to cp313 = Python 3.10, 3.11, 3.12, 3.13
+          # win_amd64      = Windows 64-bit
+          # manylinux_2_28 = Linux with glibc 2.28+ (Ubuntu 20.04+)
+          # macosx_arm64   = Mac Apple Silicon (M1, M2, M3)
+          # macosx_x86_64  = Mac Intel
+          # --------------------------------------------------------
+          CIBW_BUILD: cp310-* cp311-* cp312-* cp313-*
 
-            # Install CGAL inside the Linux container
-            CIBW_BEFORE_ALL_LINUX: |
-              dnf install -y epel-release
-              dnf install -y CGAL-devel boost-devel gmp-devel mpfr-devel
+          # --------------------------------------------------------
+          # EXCLUDED PLATFORMS (not compatible)
+          # win32          = Windows 32-bit (too old)
+          # manylinux_i686 = Linux 32-bit (too old)
+          # musllinux      = Alpine Linux (missing CGAL packages)
+          # manylinux_2_17 = CentOS 7 based (Boost too old, < 1.72)
+          # --------------------------------------------------------
+          CIBW_SKIP: "*-win32 *-manylinux_i686 *-musllinux*"
+          CIBW_ARCHS: auto64
 
-            # Pass vcpkg paths into cibuildwheel's isolated environment on Windows
-            CIBW_ENVIRONMENT_WINDOWS: >
-              CGAL_DIR="C:/vcpkg/installed/x64-windows/share/cgal"
-              CMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+          # Use modern manylinux image (glibc 2.28+)
+          # Supports: Ubuntu 20.04+, Debian 10+, RHEL 8+, CentOS 8+
+          # Excludes: Ubuntu 18.04 and older, CentOS 7 and older
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
 
-            CIBW_BEFORE_BUILD: pip install scikit-build-core pybind11
+          # Install CGAL inside the Linux container
+          CIBW_BEFORE_ALL_LINUX: |
+            dnf install -y epel-release
+            dnf install -y CGAL-devel boost-devel gmp-devel mpfr-devel
+
+          # Pass vcpkg paths into cibuildwheel's isolated environment on Windows
+          # This is needed because cibuildwheel runs in isolation and
+          # does not inherit the host machine's environment variables
+          CIBW_ENVIRONMENT_WINDOWS: >
+            CGAL_DIR="C:/vcpkg/installed/x64-windows/share/cgal"
+            CMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+
+          # Install build dependencies for all platforms
+          CIBW_BEFORE_BUILD: pip install scikit-build-core pybind11
 
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}
           path: ./wheelhouse/*.whl
 
+  # ============================================================
+  # Publish to PyPI after all wheels are built
+  # ============================================================
   publish:
     name: Publish to PyPI
     needs: build_wheels
