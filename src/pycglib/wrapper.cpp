@@ -26,9 +26,9 @@ double squared_distance(double x1, double y1, double x2, double y2);
 
 // ============================================================
 // PYTHON MODULE
-// The module is named pygeometry_core.
+// The module is named pycglib_core.
 // __init__.py imports everything from this module
-// so users just do: import pygeometry as pg
+// so users just do: import pycglib as pg
 // ============================================================
 PYBIND11_MODULE(pycglib_core, m) {
     m.doc() = "pycglib - CGAL Python bindings";
