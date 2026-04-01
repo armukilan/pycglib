@@ -1,4 +1,5 @@
 #include "core/segment2.h"
+#include "core/direction2.h"
 
 // --- Creation ---
 Segment2 make_segment2(const Point2& p, const Point2& q) {

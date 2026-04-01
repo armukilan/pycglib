@@ -49,9 +49,12 @@
 
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include "core/types.h"
 #include "core/points.h"
-#include "core/orientation.h"
 #include "core/segment2.h"
+#include "core/direction2.h"
+#include "core/orientation.h"
 
 
 // Declared from original/distance.cpp
@@ -155,11 +158,37 @@ py::class_<Bbox2>(m, "Bbox2")
     });
 
 // --- Direction2 ---
+// py::class_<Direction2>(m, "Direction2")
+//     // .def("dx", &Direction2::dx)
+//     // .def("dy", &Direction2::dy)
+//     .def_property_readonly("dx", &Direction2::dx)
+//     .def_property_readonly("dy", &Direction2::dy)
+//     .def("__repr__", [](const Direction2& d) {
+//         return "Direction2(" + std::to_string(d.dx()) + ", " +
+//                                std::to_string(d.dy()) + ")";
+//     });
+// Inside PYBIND11_MODULE block — replace old Direction2 stub with:
 py::class_<Direction2>(m, "Direction2")
-    // .def("dx", &Direction2::dx)
-    // .def("dy", &Direction2::dy)
-    .def_property_readonly("dx", &Direction2::dx)
-    .def_property_readonly("dy", &Direction2::dy)
+    .def(py::init<double, double>(),
+         py::arg("x"), py::arg("y"))
+    .def(py::init(&direction2_from_vector),
+         py::arg("v"))
+    .def(py::init(&direction2_from_segment),
+         py::arg("s"))
+    .def_property_readonly("dx",    &Direction2::dx)
+    .def_property_readonly("dy",    &Direction2::dy)
+    .def("delta",                   &Direction2::delta)
+    .def("counterclockwise_in_between", &direction2_counterclockwise_in_between,
+         py::arg("d1"), py::arg("d2"))
+    .def("vector",                  &direction2_vector)
+    .def("opposite",                &direction2_opposite)
+    .def("__neg__",                 &direction2_opposite)
+    .def("__eq__",                  &direction2_eq)
+    .def("__ne__",                  &direction2_neq)
+    .def("__lt__",                  &direction2_lt)
+    .def("__gt__",                  &direction2_gt)
+    .def("__le__",                  &direction2_le)
+    .def("__ge__",                  &direction2_ge)
     .def("__repr__", [](const Direction2& d) {
         return "Direction2(" + std::to_string(d.dx()) + ", " +
                                std::to_string(d.dy()) + ")";
