@@ -5,6 +5,7 @@
 Direction2 direction2_from_vector(const Vector2& v);
 Direction2 direction2_from_segment(const Segment2& s);
 Direction2 direction2_from_xy(double x, double y);
+Direction2 direction2_from_ray(const Ray2& r);
 
 // --- Operations ---
 bool       direction2_eq(const Direction2& a, const Direction2& b);

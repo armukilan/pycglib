@@ -1,6 +1,8 @@
 #pragma once
 #include "core/types.h"
 
+Line2 line2_from_ray(const Ray2& r);
+
 // --- Operations ---
 bool   line2_eq(const Line2& a, const Line2& b);
 bool   line2_neq(const Line2& a, const Line2& b);

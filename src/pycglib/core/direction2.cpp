@@ -1,4 +1,5 @@
 #include "core/direction2.h"
+#include "core/ray2.h"   // add at top of direction2.cpp
 
 // --- Creation ---
 Direction2 direction2_from_vector(const Vector2& v) {
@@ -11,6 +12,10 @@ Direction2 direction2_from_segment(const Segment2& s) {
 
 Direction2 direction2_from_xy(double x, double y) {
     return Direction2(x, y);
+}
+
+Direction2 direction2_from_ray(const Ray2& r) {
+    return Direction2(r.r.direction());
 }
 
 // --- Operations ---

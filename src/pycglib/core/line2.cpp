@@ -1,4 +1,5 @@
 #include "core/line2.h"
+#include "core/ray2.h"   // add at top of line2.cpp
 
 // --- Operations ---
 bool line2_eq(const Line2& a, const Line2& b) {
@@ -76,4 +77,8 @@ Line2 line2_opposite(const Line2& l) {
 
 Line2 line2_perpendicular(const Line2& l, const Point2& p) {
     return Line2(l.l.perpendicular(CGALPoint2(p.x(), p.y())));
+}
+
+Line2 line2_from_ray(const Ray2& r) {
+    return Line2(r.r.supporting_line());
 }

@@ -56,6 +56,7 @@
 #include "core/direction2.h"
 #include "core/orientation.h"
 #include "core/line2.h"
+#include "core/ray2.h"
 
 
 // Declared from original/distance.cpp
@@ -176,6 +177,7 @@ py::class_<Direction2>(m, "Direction2")
          py::arg("v"))
     .def(py::init(&direction2_from_segment),
          py::arg("s"))
+    .def(py::init(&direction2_from_ray), py::arg("r"))
     .def_property_readonly("dx",    &Direction2::dx)
     .def_property_readonly("dy",    &Direction2::dy)
     .def("delta",                   &Direction2::delta)
@@ -220,6 +222,12 @@ py::class_<Line2>(m, "Line2")
          py::arg("p"), py::arg("v"))
     .def(py::init<const Segment2&>(),
          py::arg("s"))
+    // .def(py::init<const Ray2&>(), py::arg("r"))
+    // .def("from_ray", &line2_from_ray, py::arg("r"))
+    // .def("from_ray", [](const Line2&, const Ray2& r) { return line2_from_ray(r); }, py::arg("r"))
+    .def(py::init([](const Ray2& r) { return Line2(r.r.supporting_line()); }),
+         py::arg("r"))
+    .def_static("from_ray", &line2_from_ray, py::arg("r"))
     .def_property_readonly("a",   &Line2::a)
     .def_property_readonly("b",   &Line2::b)
     .def_property_readonly("c",   &Line2::c)
@@ -277,4 +285,40 @@ py::class_<Segment2>(m, "Segment2")
                                std::to_string(tgt.x()) + ", " +
                                std::to_string(tgt.y()) + "))";
     });
+
+
+// --- Ray2 ---
+py::class_<Ray2>(m, "Ray2")
+    .def(py::init<const Point2&, const Point2&>(),
+         py::arg("p"), py::arg("q"))
+    .def(py::init<const Point2&, const Direction2&>(),
+         py::arg("p"), py::arg("d"))
+    .def(py::init<const Point2&, const Vector2&>(),
+         py::arg("p"), py::arg("v"))
+    .def(py::init<const Point2&, const Line2&>(),
+         py::arg("p"), py::arg("l"))
+    .def("source",           &ray2_source)
+    .def("point",            &ray2_point,            py::arg("i"))
+    .def("direction",        &ray2_direction)
+    .def("to_vector",        &ray2_to_vector)
+    .def("supporting_line",  &ray2_supporting_line)
+    .def("opposite",         &ray2_opposite)
+    .def("is_degenerate",    &ray2_is_degenerate)
+    .def("is_horizontal",    &ray2_is_horizontal)
+    .def("is_vertical",      &ray2_is_vertical)
+    .def("has_on",           &ray2_has_on,           py::arg("p"))
+    .def("collinear_has_on", &ray2_collinear_has_on, py::arg("p"))
+    .def("__eq__",           &ray2_eq)
+    .def("__ne__",           &ray2_neq)
+    .def("__repr__", [](const Ray2& r) {
+        auto s = ray2_source(r);
+        auto d = ray2_direction(r);
+        return "Ray2(source=(" + std::to_string(s.x()) + ", " +
+                                  std::to_string(s.y()) + "), direction=(" +
+                                  std::to_string(d.dx()) + ", " +
+                                  std::to_string(d.dy()) + "))";
+    });
+
+
+
 }

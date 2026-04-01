@@ -7,6 +7,7 @@ typedef Kernel::Vector_2     CGALVector2;
 typedef Kernel::Direction_2  CGALDirection2;
 typedef Kernel::Segment_2    CGALSegment2;
 typedef Kernel::Line_2       CGALLine2;
+typedef Kernel::Ray_2 CGALRay2;
 
 // ─── Point2 ───────────────────────────────────────────────
 struct Point2 {
@@ -54,6 +55,8 @@ struct Segment2 {
 
 // ─── Line2 (stub — full impl later) ──────────────────────
 // Replace the Line2 stub with this:
+struct Ray2; // forward declare Ray2 before Line2
+
 struct Line2 {
     CGALLine2 l;
     Line2(CGALLine2 line) : l(line) {}
@@ -62,8 +65,23 @@ struct Line2 {
     Line2(const Point2& p, const Direction2& d) : l(CGALPoint2(p.x(), p.y()), d.d) {}
     Line2(const Point2& p, const Vector2& v) : l(CGALPoint2(p.x(), p.y()), v.v) {}
     Line2(const Segment2& s) : l(s.s) {}
+    // Line2(const Ray2& r) : l(r.r) {}
     double a() const { return CGAL::to_double(l.a()); }
     double b() const { return CGAL::to_double(l.b()); }
     double c() const { return CGAL::to_double(l.c()); }
+};
+
+// ─── Ray2 ─────────────────────────────────────────────────
+struct Ray2 {
+    CGALRay2 r;
+    Ray2(CGALRay2 ray) : r(ray) {}
+    Ray2(const Point2& p, const Point2& q)
+        : r(CGALPoint2(p.x(), p.y()), CGALPoint2(q.x(), q.y())) {}
+    Ray2(const Point2& p, const Direction2& d)
+        : r(CGALPoint2(p.x(), p.y()), d.d) {}
+    Ray2(const Point2& p, const Vector2& v)
+        : r(CGALPoint2(p.x(), p.y()), v.v) {}
+    Ray2(const Point2& p, const Line2& l)
+        : r(CGALPoint2(p.x(), p.y()), l.l) {}
 };
 
