@@ -57,6 +57,7 @@
 #include "core/orientation.h"
 #include "core/line2.h"
 #include "core/ray2.h"
+#include "core/triangle2.h"
 
 
 // Declared from original/distance.cpp
@@ -317,6 +318,36 @@ py::class_<Ray2>(m, "Ray2")
                                   std::to_string(s.y()) + "), direction=(" +
                                   std::to_string(d.dx()) + ", " +
                                   std::to_string(d.dy()) + "))";
+    });
+
+
+// --- Triangle2 ---
+py::class_<Triangle2>(m, "Triangle2")
+    .def(py::init<const Point2&, const Point2&, const Point2&>(),
+         py::arg("p"), py::arg("q"), py::arg("r"))
+    .def("vertex",                &triangle2_vertex,              py::arg("i"))
+    .def("__getitem__",           &triangle2_vertex,              py::arg("i"))
+    .def("is_degenerate",         &triangle2_is_degenerate)
+    .def("orientation",           &triangle2_orientation)
+    .def("oriented_side",         &triangle2_oriented_side,       py::arg("p"))
+    .def("bounded_side",          &triangle2_bounded_side,        py::arg("p"))
+    .def("has_on_positive_side",  &triangle2_has_on_positive_side,  py::arg("p"))
+    .def("has_on_negative_side",  &triangle2_has_on_negative_side,  py::arg("p"))
+    .def("has_on_boundary",       &triangle2_has_on_boundary,       py::arg("p"))
+    .def("has_on_bounded_side",   &triangle2_has_on_bounded_side,   py::arg("p"))
+    .def("has_on_unbounded_side", &triangle2_has_on_unbounded_side, py::arg("p"))
+    .def("opposite",              &triangle2_opposite)
+    .def("area",                  &triangle2_area)
+    .def("bbox",                  &triangle2_bbox)
+    .def("__eq__",                &triangle2_eq)
+    .def("__ne__",                &triangle2_neq)
+    .def("__repr__", [](const Triangle2& t) {
+        auto p = triangle2_vertex(t, 0);
+        auto q = triangle2_vertex(t, 1);
+        auto r = triangle2_vertex(t, 2);
+        return "Triangle2((" + std::to_string(p.x()) + ", " + std::to_string(p.y()) + "), ("
+                             + std::to_string(q.x()) + ", " + std::to_string(q.y()) + "), ("
+                             + std::to_string(r.x()) + ", " + std::to_string(r.y()) + "))";
     });
 
 

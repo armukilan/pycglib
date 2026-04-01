@@ -8,6 +8,7 @@ typedef Kernel::Direction_2  CGALDirection2;
 typedef Kernel::Segment_2    CGALSegment2;
 typedef Kernel::Line_2       CGALLine2;
 typedef Kernel::Ray_2 CGALRay2;
+typedef Kernel::Triangle_2 CGALTriangle2;
 
 // ─── Point2 ───────────────────────────────────────────────
 struct Point2 {
@@ -83,5 +84,15 @@ struct Ray2 {
         : r(CGALPoint2(p.x(), p.y()), v.v) {}
     Ray2(const Point2& p, const Line2& l)
         : r(CGALPoint2(p.x(), p.y()), l.l) {}
+};
+
+// ─── Triangle2 ────────────────────────────────────────────
+struct Triangle2 {
+    CGALTriangle2 t;
+    Triangle2(CGALTriangle2 tri) : t(tri) {}
+    Triangle2(const Point2& p, const Point2& q, const Point2& r)
+        : t(CGALPoint2(p.x(), p.y()),
+            CGALPoint2(q.x(), q.y()),
+            CGALPoint2(r.x(), r.y())) {}
 };
 
