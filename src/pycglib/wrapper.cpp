@@ -94,7 +94,7 @@ PYBIND11_MODULE(pycglib_core, m) {
 
     // Exposes run_distance() from original/distance.cpp to Python
     // Python calls it as: cgal_python.run_distance(x1, y1, x2, y2)
-    m.def("squared_distance", &run_distance,
+    m.def("squared_distance", &squared_distance,
           py::arg("x1"), py::arg("y1"),
           py::arg("x2"), py::arg("y2"));
 
