@@ -58,6 +58,7 @@
 #include "core/line2.h"
 #include "core/ray2.h"
 #include "core/triangle2.h"
+#include "core/circle2.h"
 
 
 // Declared from original/distance.cpp
@@ -348,6 +349,39 @@ py::class_<Triangle2>(m, "Triangle2")
         return "Triangle2((" + std::to_string(p.x()) + ", " + std::to_string(p.y()) + "), ("
                              + std::to_string(q.x()) + ", " + std::to_string(q.y()) + "), ("
                              + std::to_string(r.x()) + ", " + std::to_string(r.y()) + "))";
+    });
+
+
+// --- Circle2 ---
+py::class_<Circle2>(m, "Circle2")
+    .def(py::init<const Point2&, double, int>(),
+         py::arg("center"), py::arg("squared_radius"), py::arg("orientation") = 1)
+    .def(py::init<const Point2&, const Point2&, const Point2&>(),
+         py::arg("p"), py::arg("q"), py::arg("r"))
+    .def(py::init<const Point2&, const Point2&, int>(),
+         py::arg("p"), py::arg("q"), py::arg("orientation") = 1)
+    .def(py::init<const Point2&, int>(),
+         py::arg("center"), py::arg("orientation") = 1)
+    .def("center",                &circle2_center)
+    .def("squared_radius",        &circle2_squared_radius)
+    .def("orientation",           &circle2_orientation)
+    .def("is_degenerate",         &circle2_is_degenerate)
+    .def("oriented_side",         &circle2_oriented_side,         py::arg("p"))
+    .def("bounded_side",          &circle2_bounded_side,          py::arg("p"))
+    .def("has_on_positive_side",  &circle2_has_on_positive_side,  py::arg("p"))
+    .def("has_on_negative_side",  &circle2_has_on_negative_side,  py::arg("p"))
+    .def("has_on_boundary",       &circle2_has_on_boundary,       py::arg("p"))
+    .def("has_on_bounded_side",   &circle2_has_on_bounded_side,   py::arg("p"))
+    .def("has_on_unbounded_side", &circle2_has_on_unbounded_side, py::arg("p"))
+    .def("opposite",              &circle2_opposite)
+    .def("bbox",                  &circle2_bbox)
+    .def("__eq__",                &circle2_eq)
+    .def("__ne__",                &circle2_neq)
+    .def("__repr__", [](const Circle2& c) {
+        auto ct = circle2_center(c);
+        return "Circle2(center=(" + std::to_string(ct.x()) + ", " +
+                                    std::to_string(ct.y()) + "), squared_radius=" +
+                                    std::to_string(circle2_squared_radius(c)) + ")";
     });
 
 

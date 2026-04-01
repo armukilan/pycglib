@@ -9,6 +9,7 @@ typedef Kernel::Segment_2    CGALSegment2;
 typedef Kernel::Line_2       CGALLine2;
 typedef Kernel::Ray_2 CGALRay2;
 typedef Kernel::Triangle_2 CGALTriangle2;
+typedef Kernel::Circle_2 CGALCircle2;
 
 // ─── Point2 ───────────────────────────────────────────────
 struct Point2 {
@@ -94,5 +95,31 @@ struct Triangle2 {
         : t(CGALPoint2(p.x(), p.y()),
             CGALPoint2(q.x(), q.y()),
             CGALPoint2(r.x(), r.y())) {}
+};
+
+
+// ─── Circle2 ──────────────────────────────────────────────
+struct Circle2 {
+    CGALCircle2 c;
+    Circle2(CGALCircle2 circle) : c(circle) {}
+    // From center, squared_radius, orientation (1=CCW, -1=CW)
+    Circle2(const Point2& center, double squared_radius, int ori = 1)
+        : c(CGALPoint2(center.x(), center.y()),
+            squared_radius,
+            ori >= 0 ? CGAL::COUNTERCLOCKWISE : CGAL::CLOCKWISE) {}
+    // From three points
+    Circle2(const Point2& p, const Point2& q, const Point2& r)
+        : c(CGALPoint2(p.x(), p.y()),
+            CGALPoint2(q.x(), q.y()),
+            CGALPoint2(r.x(), r.y())) {}
+    // From two points (diameter), orientation
+    Circle2(const Point2& p, const Point2& q, int ori = 1)
+        : c(CGALPoint2(p.x(), p.y()),
+            CGALPoint2(q.x(), q.y()),
+            ori >= 0 ? CGAL::COUNTERCLOCKWISE : CGAL::CLOCKWISE) {}
+    // From center only, orientation
+    Circle2(const Point2& center, int ori = 1)
+        : c(CGALPoint2(center.x(), center.y()),
+            ori >= 0 ? CGAL::COUNTERCLOCKWISE : CGAL::CLOCKWISE) {}
 };
 
