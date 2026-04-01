@@ -1,5 +1,6 @@
 #pragma once
 #include <CGAL/Simple_cartesian.h>
+#include <CGAL/Bbox_2.h>
 
 typedef CGAL::Simple_cartesian<double> Kernel;
 typedef Kernel::Point_2      CGALPoint2;
@@ -41,10 +42,22 @@ struct Direction2 {
 };
 
 // ─── Bbox2 ────────────────────────────────────────────────
+// struct Bbox2 {
+//     double xmin, ymin, xmax, ymax;
+//     Bbox2(double xmin, double ymin, double xmax, double ymax)
+//         : xmin(xmin), ymin(ymin), xmax(xmax), ymax(ymax) {}
+// };
+// ─── Bbox2 ────────────────────────────────────────────────
 struct Bbox2 {
-    double xmin, ymin, xmax, ymax;
+    CGAL::Bbox_2 b;
+    Bbox2() : b() {}
     Bbox2(double xmin, double ymin, double xmax, double ymax)
-        : xmin(xmin), ymin(ymin), xmax(xmax), ymax(ymax) {}
+        : b(xmin, ymin, xmax, ymax) {}
+    Bbox2(CGAL::Bbox_2 bbox) : b(bbox) {}
+    double xmin() const { return b.xmin(); }
+    double ymin() const { return b.ymin(); }
+    double xmax() const { return b.xmax(); }
+    double ymax() const { return b.ymax(); }
 };
 
 
@@ -144,8 +157,11 @@ struct IsoRectangle2 {
     IsoRectangle2(double min_x, double min_y, double max_x, double max_y)
         : r(CGALPoint2(min_x, min_y), CGALPoint2(max_x, max_y)) {}
     // From Bbox2
-    IsoRectangle2(const Bbox2& bbox)
-        : r(CGALPoint2(bbox.xmin, bbox.ymin),
-            CGALPoint2(bbox.xmax, bbox.ymax)) {}
+    // IsoRectangle2(const Bbox2& bbox)
+    //     : r(CGALPoint2(bbox.xmin, bbox.ymin),
+    //         CGALPoint2(bbox.xmax, bbox.ymax)) {}
+        IsoRectangle2(const Bbox2& bbox)
+    : r(CGALPoint2(bbox.xmin(), bbox.ymin()),
+        CGALPoint2(bbox.xmax(), bbox.ymax())) {}
 };
 

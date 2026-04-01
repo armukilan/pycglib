@@ -60,6 +60,7 @@
 #include "core/triangle2.h"
 #include "core/circle2.h"
 #include "core/iso_rectangle2.h"
+#include "core/bbox2.h"
 
 
 // Declared from original/distance.cpp
@@ -149,18 +150,45 @@ PYBIND11_MODULE(pycglib_core, m) {
           "Returns orientation of three Point2 objects");
 
     // --- Bbox2 ---
-py::class_<Bbox2>(m, "Bbox2")
-    .def(py::init<double, double, double, double>())
-    .def_readonly("xmin", &Bbox2::xmin)
-    .def_readonly("ymin", &Bbox2::ymin)
-    .def_readonly("xmax", &Bbox2::xmax)
-    .def_readonly("ymax", &Bbox2::ymax)
-    .def("__repr__", [](const Bbox2& b) {
-        return "Bbox2(" + std::to_string(b.xmin) + ", " +
-                          std::to_string(b.ymin) + ", " +
-                          std::to_string(b.xmax) + ", " +
-                          std::to_string(b.ymax) + ")";
-    });
+    // py::class_<Bbox2>(m, "Bbox2")
+    //     .def(py::init<double, double, double, double>())
+    //     .def_readonly("xmin", &Bbox2::xmin)
+    //     .def_readonly("ymin", &Bbox2::ymin)
+    //     .def_readonly("xmax", &Bbox2::xmax)
+    //     .def_readonly("ymax", &Bbox2::ymax)
+    //     .def("__repr__", [](const Bbox2& b) {
+    //         return "Bbox2(" + std::to_string(b.xmin) + ", " +
+    //                           std::to_string(b.ymin) + ", " +
+    //                           std::to_string(b.xmax) + ", " +
+    //                           std::to_string(b.ymax) + ")";
+    //     });
+    // --- Bbox2 ---
+    py::class_<Bbox2>(m, "Bbox2")
+        .def(py::init<>())
+        .def(py::init<double, double, double, double>(),
+             py::arg("xmin"), py::arg("ymin"),
+             py::arg("xmax"), py::arg("ymax"))
+        .def_property_readonly("xmin",  &Bbox2::xmin)
+        .def_property_readonly("ymin",  &Bbox2::ymin)
+        .def_property_readonly("xmax",  &Bbox2::xmax)
+        .def_property_readonly("ymax",  &Bbox2::ymax)
+        .def("dimension",   &bbox2_dimension)
+        .def("min",         &bbox2_min,         py::arg("i"))
+        .def("max",         &bbox2_max,         py::arg("i"))
+        .def("dilate",      &bbox2_dilate,      py::arg("dist"))
+        .def("scale",       &bbox2_scale,       py::arg("factor"))
+        .def("do_overlap",  &bbox2_do_overlap,  py::arg("other"))
+        .def("__add__",     &bbox2_add)
+        .def("__iadd__",    &bbox2_iadd)
+        .def("__eq__",      &bbox2_eq)
+        .def("__ne__",      &bbox2_neq)
+        .def("__repr__", [](const Bbox2& b) {
+            return "Bbox2(" + std::to_string(b.xmin()) + ", " +
+                              std::to_string(b.ymin()) + ", " +
+                              std::to_string(b.xmax()) + ", " +
+                              std::to_string(b.ymax()) + ")";
+        });
+
 
 // --- Direction2 ---
 // py::class_<Direction2>(m, "Direction2")
