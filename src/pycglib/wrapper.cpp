@@ -62,6 +62,7 @@
 #include "core/iso_rectangle2.h"
 #include "core/bbox2.h"
 #include "core/weighted_point2.h"
+#include "core/aff_transformation2.h"
 
 // Declared from original/distance.cpp
 // double run_distance(double x1, double y1, double x2, double y2);
@@ -115,27 +116,33 @@ PYBIND11_MODULE(pycglib_core, m) {
     
     // --- New: Point2 class ---
     py::class_<Point2>(m, "Point2")
-        .def(py::init<double, double>())
-        .def_property_readonly("x", &Point2::x)
-        .def_property_readonly("y", &Point2::y)
-        .def("__sub__",  &point2_sub)
-        .def("__add__",  &point2_add_vector)
-        .def("__repr__", [](const Point2& p) {
-            return "Point2(" + std::to_string(p.x()) + ", " + std::to_string(p.y()) + ")";
-        });
+    .def(py::init<double, double>())
+    .def_property_readonly("x", &Point2::x)
+    .def_property_readonly("y", &Point2::y)
+    .def("__sub__",  &point2_sub)
+    .def("__add__",  &point2_add_vector)
+    .def("__repr__", [](const Point2& p) {
+        return "Point2(" + std::to_string(p.x()) + ", " + std::to_string(p.y()) + ")";
+    })                                          // ← close __repr__ here
+    .def("transform", [](const Point2& p, const AffTransformation2& t) {
+        return aff2_transform_point(t, p);
+    }, py::arg("t"));                           // ← semicolon ends the class
 
     
     // --- New: Vector2 class ---
     py::class_<Vector2>(m, "Vector2")
-        .def(py::init<double, double>())
-        .def_property_readonly("x", &Vector2::x)
-        .def_property_readonly("y", &Vector2::y)
-        .def("__add__",  &vector2_add)
-        .def("__mul__",  &vector2_mul)
-        .def("__rmul__", &vector2_mul)
-        .def("__repr__", [](const Vector2& v) {
-            return "Vector2(" + std::to_string(v.x()) + ", " + std::to_string(v.y()) + ")";
-        });
+    .def(py::init<double, double>())
+    .def_property_readonly("x", &Vector2::x)
+    .def_property_readonly("y", &Vector2::y)
+    .def("__add__",  &vector2_add)
+    .def("__mul__",  &vector2_mul)
+    .def("__rmul__", &vector2_mul)
+    .def("__repr__", [](const Vector2& v) {
+        return "Vector2(" + std::to_string(v.x()) + ", " + std::to_string(v.y()) + ")";
+    })                                          // ← close __repr__ here
+    .def("transform", [](const Vector2& v, const AffTransformation2& t) {
+        return aff2_transform_vector(t, v);
+    }, py::arg("t"));                           // ← semicolon ends the class
 
 
     // Orientation
@@ -225,8 +232,11 @@ py::class_<Direction2>(m, "Direction2")
     .def("__ge__",                  &direction2_ge)
     .def("__repr__", [](const Direction2& d) {
         return "Direction2(" + std::to_string(d.dx()) + ", " +
-                               std::to_string(d.dy()) + ")";
-    });
+                               std::to_string(d.dy()) + ")";})
+
+    .def("transform", [](const Direction2& d, const AffTransformation2& t) {
+        return aff2_transform_direction(t, d);
+    }, py::arg("t"));
 
 // --- Line2 (stub for now, full version comes later) ---
 // py::class_<Line2>(m, "Line2")
@@ -282,8 +292,10 @@ py::class_<Line2>(m, "Line2")
     .def("__repr__", [](const Line2& l) {
         return "Line2(a=" + std::to_string(l.a()) + ", b=" +
                              std::to_string(l.b()) + ", c=" +
-                             std::to_string(l.c()) + ")";
-    });
+                             std::to_string(l.c()) + ")";})
+    .def("transform", [](const Line2& l, const AffTransformation2& t) {
+        return aff2_transform_line(t, l);
+    }, py::arg("t"));
 
 // --- Segment2 ---
 py::class_<Segment2>(m, "Segment2")
@@ -314,8 +326,12 @@ py::class_<Segment2>(m, "Segment2")
         return "Segment2((" + std::to_string(src.x()) + ", " +
                                std::to_string(src.y()) + "), (" +
                                std::to_string(tgt.x()) + ", " +
-                               std::to_string(tgt.y()) + "))";
-    });
+                               std::to_string(tgt.y()) + "))";})
+
+    .def("transform", [](const Segment2& s, const AffTransformation2& t) {
+    auto result = s.s.transform(t.t);
+    return Segment2(result);
+    }, py::arg("t"));
 
 
 // --- Ray2 ---
@@ -377,8 +393,10 @@ py::class_<Triangle2>(m, "Triangle2")
         auto r = triangle2_vertex(t, 2);
         return "Triangle2((" + std::to_string(p.x()) + ", " + std::to_string(p.y()) + "), ("
                              + std::to_string(q.x()) + ", " + std::to_string(q.y()) + "), ("
-                             + std::to_string(r.x()) + ", " + std::to_string(r.y()) + "))";
-    });
+                             + std::to_string(r.x()) + ", " + std::to_string(r.y()) + "))";})
+    .def("transform", [](const Triangle2& tri, const AffTransformation2& t) {
+    return Triangle2(tri.t.transform(t.t));
+    }, py::arg("t"));
 
 
 // --- Circle2 ---
@@ -410,8 +428,10 @@ py::class_<Circle2>(m, "Circle2")
         auto ct = circle2_center(c);
         return "Circle2(center=(" + std::to_string(ct.x()) + ", " +
                                     std::to_string(ct.y()) + "), squared_radius=" +
-                                    std::to_string(circle2_squared_radius(c)) + ")";
-    });
+                                    std::to_string(circle2_squared_radius(c)) + ")";})
+    .def("orthogonal_transform", [](const Circle2& c, const AffTransformation2& t) {
+        return Circle2(c.c.orthogonal_transform(t.t));
+    }, py::arg("t"));
 
 
 // --- IsoRectangle2 ---
@@ -449,8 +469,10 @@ py::class_<IsoRectangle2>(m, "IsoRectangle2")
         return "IsoRectangle2(xmin=" + std::to_string(iso_rect2_xmin(r)) +
                             ", ymin=" + std::to_string(iso_rect2_ymin(r)) +
                             ", xmax=" + std::to_string(iso_rect2_xmax(r)) +
-                            ", ymax=" + std::to_string(iso_rect2_ymax(r)) + ")";
-    });
+                            ", ymax=" + std::to_string(iso_rect2_ymax(r)) + ")";})
+    .def("transform", [](const IsoRectangle2& r, const AffTransformation2& t) {
+    return IsoRectangle2(r.r.transform(t.t));
+    }, py::arg("t"));
 
 
     // --- WeightedPoint2 ---
@@ -477,7 +499,58 @@ py::class_<WeightedPoint2>(m, "WeightedPoint2")
         return "WeightedPoint2(point=(" +
                std::to_string(wp2_x(wp)) + ", " +
                std::to_string(wp2_y(wp)) + "), weight=" +
-               std::to_string(wp2_weight(wp)) + ")";
+               std::to_string(wp2_weight(wp)) + ")";})
+    .def("transform", [](const WeightedPoint2& wp, const AffTransformation2& t) {
+    return WeightedPoint2(wp.wp.transform(t.t));
+    }, py::arg("t"));
+
+
+    // --- AffTransformation2 ---
+py::class_<AffTransformation2>(m, "AffTransformation2")
+    // Identity
+    .def(py::init<>())
+    // Translation from vector
+    .def(py::init<const Vector2&>(),         py::arg("v"))
+    // Scaling from scalar
+    .def(py::init<double>(),                 py::arg("s"))
+    // Reflection from line
+    .def(py::init<const Line2&>(),           py::arg("l"))
+    // Rotation from sine/cosine
+    .def(py::init<double, double>(),         py::arg("sine"), py::arg("cosine"))
+    // General affine with translation
+    .def(py::init<double, double, double,
+                  double, double, double>(),
+         py::arg("m00"), py::arg("m01"), py::arg("m02"),
+         py::arg("m10"), py::arg("m11"), py::arg("m12"))
+    // General linear no translation
+    .def(py::init<double, double,
+                  double, double>(),
+         py::arg("m00"), py::arg("m01"),
+         py::arg("m10"), py::arg("m11"))
+    // Transform operations
+    .def("transform_point",     &aff2_transform_point,     py::arg("p"))
+    .def("transform_vector",    &aff2_transform_vector,    py::arg("v"))
+    .def("transform_direction", &aff2_transform_direction, py::arg("d"))
+    .def("transform_line",      &aff2_transform_line,      py::arg("l"))
+    // Call operators
+    .def("__call__", &aff2_transform_point,     py::arg("p"))
+    // Miscellaneous
+    .def("inverse",         &aff2_inverse)
+    .def("is_even",         &aff2_is_even)
+    .def("is_odd",          &aff2_is_odd)
+    .def("is_scaling",      &aff2_is_scaling)
+    .def("is_translation",  &aff2_is_translation)
+    .def("is_rotation",     &aff2_is_rotation)
+    .def("is_reflection",   &aff2_is_reflection)
+    .def("cartesian",       &aff2_cartesian,   py::arg("i"), py::arg("j"))
+    .def("homogeneous",     &aff2_homogeneous, py::arg("i"), py::arg("j"))
+    .def("__mul__",         &aff2_mul)
+    .def("__eq__",          &aff2_eq)
+    .def("__repr__", [](const AffTransformation2& t) {
+        return "AffTransformation2(m00=" + std::to_string(aff2_cartesian(t, 0, 0)) +
+               ", m01=" + std::to_string(aff2_cartesian(t, 0, 1)) +
+               ", m10=" + std::to_string(aff2_cartesian(t, 1, 0)) +
+               ", m11=" + std::to_string(aff2_cartesian(t, 1, 1)) + ")";
     });
 
 

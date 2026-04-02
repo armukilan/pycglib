@@ -13,6 +13,7 @@ typedef Kernel::Triangle_2 CGALTriangle2;
 typedef Kernel::Circle_2 CGALCircle2;
 typedef Kernel::Iso_rectangle_2 CGALIsoRectangle2;
 typedef Kernel::Weighted_point_2 CGALWeightedPoint2;
+typedef Kernel::Aff_transformation_2 CGALAffTransformation2;
 
 
 // ─── Point2 ───────────────────────────────────────────────
@@ -183,4 +184,33 @@ struct WeightedPoint2 {
     // From x, y coordinates, weight 0
     WeightedPoint2(double x, double y)
         : wp(CGALPoint2(x, y)) {}
+};
+
+// ─── AffTransformation2 ───────────────────────────────────
+struct AffTransformation2 {
+    CGALAffTransformation2 t;
+    AffTransformation2(CGALAffTransformation2 t) : t(t) {}
+    // Identity
+    AffTransformation2()
+        : t(CGAL::IDENTITY) {}
+    // Translation
+    AffTransformation2(const Vector2& v)
+        : t(CGAL::TRANSLATION, v.v) {}
+    // Scaling
+    AffTransformation2(double s)
+        : t(CGAL::SCALING, s) {}
+    // Reflection
+    AffTransformation2(const Line2& l)
+        : t(CGAL::REFLECTION, l.l) {}
+    // Rotation by sine/cosine
+    AffTransformation2(double sine, double cosine)
+        : t(CGAL::ROTATION, sine, cosine) {}
+    // General affine with translation
+    AffTransformation2(double m00, double m01, double m02,
+                       double m10, double m11, double m12)
+        : t(m00, m01, m02, m10, m11, m12) {}
+    // General linear (no translation)
+    AffTransformation2(double m00, double m01,
+                       double m10, double m11)
+        : t(m00, m01, m10, m11) {}
 };
