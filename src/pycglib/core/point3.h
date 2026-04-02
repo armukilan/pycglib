@@ -21,6 +21,13 @@ Vector3 vector3_add(const Vector3& a, const Vector3& b);
 Vector3 vector3_sub(const Vector3& a, const Vector3& b);
 Vector3 vector3_mul(const Vector3& a, double scalar);
 Vector3 vector3_neg(const Vector3& v);
+// --- Missing Vector3 operations ---
+double  vector3_squared_length(const Vector3& v);
+Vector3 vector3_div(const Vector3& v, double scalar);
+double  vector3_dot(const Vector3& a, const Vector3& b);
+bool    vector3_eq(const Vector3& a, const Vector3& b);
+bool    vector3_neq(const Vector3& a, const Vector3& b);
+Vector3 vector3_from_points(const Point3& a, const Point3& b);
 
 // --- Miscellaneous ---
 Bbox3  point3_bbox(const Point3& p);

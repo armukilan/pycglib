@@ -670,6 +670,14 @@ py::class_<Point3>(m, "Point3")
 
 // --- Vector3 ---
 py::class_<Vector3>(m, "Vector3")
+        .def(py::init<>())                              // NULL_VECTOR
+    .def(py::init(&vector3_from_points),
+         py::arg("a"), py::arg("b"))               // from two points
+    .def("squared_length", &vector3_squared_length)
+    .def("__truediv__",    &vector3_div,    py::arg("scalar"))
+    .def("__mul__",        &vector3_dot,    py::arg("w"))      // dot product
+    .def("__eq__",         &vector3_eq)
+    .def("__ne__",         &vector3_neq)
     .def(py::init<double, double, double>(), py::arg("x"), py::arg("y"), py::arg("z"))
     .def(py::init<int, int, int>(),          py::arg("x"), py::arg("y"), py::arg("z"))
     .def_property_readonly("x",  &Vector3::x)

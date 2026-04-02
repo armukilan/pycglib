@@ -281,6 +281,7 @@ struct Point3 {
 // ─── Vector3 ──────────────────────────────────────────────
 struct Vector3 {
     CGALVector3 v;
+    Vector3() : v(CGAL::NULL_VECTOR) {}
 
     Vector3(double x, double y, double z) : v(x, y, z) {}
     Vector3(int x, int y, int z) : v(x, y, z) {}

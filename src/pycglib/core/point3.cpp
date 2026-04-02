@@ -69,6 +69,31 @@ Vector3 vector3_neg(const Vector3& v) {
                    CGAL::to_double(r.z()));
 }
 
+double vector3_squared_length(const Vector3& v) {
+    return CGAL::to_double(v.v.squared_length());
+}
+
+Vector3 vector3_div(const Vector3& v, double scalar) {
+    auto r = v.v / scalar;
+    return Vector3(CGAL::to_double(r.x()),
+                   CGAL::to_double(r.y()),
+                   CGAL::to_double(r.z()));
+}
+
+double vector3_dot(const Vector3& a, const Vector3& b) {
+    return CGAL::to_double(a.v * b.v);
+}
+
+bool vector3_eq(const Vector3& a, const Vector3& b)  { return a.v == b.v; }
+bool vector3_neq(const Vector3& a, const Vector3& b) { return a.v != b.v; }
+
+Vector3 vector3_from_points(const Point3& a, const Point3& b) {
+    auto r = b.p - a.p;
+    return Vector3(CGAL::to_double(r.x()),
+                   CGAL::to_double(r.y()),
+                   CGAL::to_double(r.z()));
+}
+
 // --- Miscellaneous ---
 Bbox3 point3_bbox(const Point3& p) {
     auto b = p.p.bbox();
