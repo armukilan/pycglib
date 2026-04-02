@@ -17,12 +17,36 @@ typedef Kernel::Aff_transformation_2 CGALAffTransformation2;
 
 
 // ─── Point2 ───────────────────────────────────────────────
+// struct Point2 {
+//     CGALPoint2 p;
+//     Point2(double x, double y) : p(x, y) {}
+//     Point2(CGALPoint2 pt) : p(pt) {}
+//     double x() const { return CGAL::to_double(p.x()); }
+//     double y() const { return CGAL::to_double(p.y()); }
+// };
+// ─── Point2 ───────────────────────────────────────────────
 struct Point2 {
     CGALPoint2 p;
+
+    // --- Creation ---
+    Point2() : p(CGAL::ORIGIN) {}
     Point2(double x, double y) : p(x, y) {}
+    Point2(int x, int y) : p(x, y) {}
     Point2(CGALPoint2 pt) : p(pt) {}
-    double x() const { return CGAL::to_double(p.x()); }
-    double y() const { return CGAL::to_double(p.y()); }
+    // Point2(const WeightedPoint2& wp) : p(wp.wp.point()) {}  // add after WeightedPoint2 defined
+
+    // --- Coordinate access ---
+    double x()  const { return CGAL::to_double(p.x()); }
+    double y()  const { return CGAL::to_double(p.y()); }
+    double hx() const { return CGAL::to_double(p.hx()); }
+    double hy() const { return CGAL::to_double(p.hy()); }
+    double hw() const { return CGAL::to_double(p.hw()); }
+
+    // --- Convenience ---
+    double cartesian(int i)   const { return CGAL::to_double(p.cartesian(i)); }
+    double homogeneous(int i) const { return CGAL::to_double(p.homogeneous(i)); }
+    double operator[](int i)  const { return CGAL::to_double(p.cartesian(i)); }
+    int    dimension()        const { return p.dimension(); }
 };
 
 // ─── Vector2 ──────────────────────────────────────────────
@@ -214,3 +238,10 @@ struct AffTransformation2 {
                        double m10, double m11)
         : t(m00, m01, m10, m11) {}
 };
+
+
+// // At bottom of types.h after all structs defined:
+// inline Point2 point2_from_weighted(const WeightedPoint2& wp) {
+//     auto pt = wp.wp.point();
+//     return Point2(CGAL::to_double(pt.x()), CGAL::to_double(pt.y()));
+// }

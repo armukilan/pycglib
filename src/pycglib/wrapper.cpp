@@ -115,34 +115,89 @@ PYBIND11_MODULE(pycglib_core, m) {
     //       py::arg("x2"), py::arg("y2"));
     
     // --- New: Point2 class ---
-    py::class_<Point2>(m, "Point2")
-    .def(py::init<double, double>())
-    .def_property_readonly("x", &Point2::x)
-    .def_property_readonly("y", &Point2::y)
-    .def("__sub__",  &point2_sub)
-    .def("__add__",  &point2_add_vector)
-    .def("__repr__", [](const Point2& p) {
-        return "Point2(" + std::to_string(p.x()) + ", " + std::to_string(p.y()) + ")";
-    })                                          // ← close __repr__ here
-    .def("transform", [](const Point2& p, const AffTransformation2& t) {
-        return aff2_transform_point(t, p);
-    }, py::arg("t"));                           // ← semicolon ends the class
+    // py::class_<Point2>(m, "Point2")
+    // .def(py::init<double, double>())
+    // .def_property_readonly("x", &Point2::x)
+    // .def_property_readonly("y", &Point2::y)
+    // .def("__sub__",  &point2_sub)
+    // .def("__add__",  &point2_add_vector)
+    // .def("__repr__", [](const Point2& p) {
+    //     return "Point2(" + std::to_string(p.x()) + ", " + std::to_string(p.y()) + ")";
+    // })                                          // ← close __repr__ here
+    // .def("transform", [](const Point2& p, const AffTransformation2& t) {
+    //     return aff2_transform_point(t, p);
+    // }, py::arg("t"));                           // ← semicolon ends the class
 
     
-    // --- New: Vector2 class ---
-    py::class_<Vector2>(m, "Vector2")
-    .def(py::init<double, double>())
+    // // --- New: Vector2 class ---
+    // py::class_<Vector2>(m, "Vector2")
+    // .def(py::init<double, double>())
+    // .def_property_readonly("x", &Vector2::x)
+    // .def_property_readonly("y", &Vector2::y)
+    // .def("__add__",  &vector2_add)
+    // .def("__mul__",  &vector2_mul)
+    // .def("__rmul__", &vector2_mul)
+    // .def("__repr__", [](const Vector2& v) {
+    //     return "Vector2(" + std::to_string(v.x()) + ", " + std::to_string(v.y()) + ")";
+    // })                                          // ← close __repr__ here
+    // .def("transform", [](const Vector2& v, const AffTransformation2& t) {
+    //     return aff2_transform_vector(t, v);
+    // }, py::arg("t"));                           // ← semicolon ends the class
+
+
+    // --- Point2 ---
+py::class_<Point2>(m, "Point2")
+    .def(py::init<>())
+    .def(py::init<double, double>(),  py::arg("x"), py::arg("y"))
+    .def(py::init<int, int>(),        py::arg("x"), py::arg("y"))
+    // .def(py::init(&point2_from_weighted), py::arg("wp"))
+    .def(py::init([](const WeightedPoint2& wp) {
+    return point2_from_weighted(wp);
+    }), py::arg("wp"))
+    .def_property_readonly("x",  &Point2::x)
+    .def_property_readonly("y",  &Point2::y)
+    .def_property_readonly("hx", &Point2::hx)
+    .def_property_readonly("hy", &Point2::hy)
+    .def_property_readonly("hw", &Point2::hw)
+    .def("cartesian",    &Point2::cartesian,   py::arg("i"))
+    .def("homogeneous",  &Point2::homogeneous, py::arg("i"))
+    .def("dimension",    &Point2::dimension)
+    .def("bbox",         &point2_bbox)
+    .def("__getitem__",  &Point2::operator[],  py::arg("i"))
+    .def("__sub__",      &point2_sub)
+    .def("__add__",      &point2_add_vector)
+    .def("__sub__",      &point2_sub_vector)
+    .def("__iadd__",     &point2_iadd)
+    .def("__isub__",     &point2_isub)
+    .def("__eq__",       &point2_eq)
+    .def("__ne__",       &point2_neq)
+    .def("__lt__",       &point2_lt)
+    .def("__gt__",       &point2_gt)
+    .def("__le__",       &point2_le)
+    .def("__ge__",       &point2_ge)
+    .def("transform", [](const Point2& p, const AffTransformation2& t) {
+        return aff2_transform_point(t, p);
+    }, py::arg("t"))
+    .def("__repr__", [](const Point2& p) {
+        return "Point2(" + std::to_string(p.x()) + ", " + std::to_string(p.y()) + ")";
+    });
+
+// --- Vector2 ---
+py::class_<Vector2>(m, "Vector2")
+    .def(py::init<double, double>(), py::arg("x"), py::arg("y"))
     .def_property_readonly("x", &Vector2::x)
     .def_property_readonly("y", &Vector2::y)
     .def("__add__",  &vector2_add)
+    .def("__sub__",  &vector2_sub)
     .def("__mul__",  &vector2_mul)
     .def("__rmul__", &vector2_mul)
-    .def("__repr__", [](const Vector2& v) {
-        return "Vector2(" + std::to_string(v.x()) + ", " + std::to_string(v.y()) + ")";
-    })                                          // ← close __repr__ here
+    .def("__neg__",  &vector2_neg)
     .def("transform", [](const Vector2& v, const AffTransformation2& t) {
         return aff2_transform_vector(t, v);
-    }, py::arg("t"));                           // ← semicolon ends the class
+    }, py::arg("t"))
+    .def("__repr__", [](const Vector2& v) {
+        return "Vector2(" + std::to_string(v.x()) + ", " + std::to_string(v.y()) + ")";
+    });
 
 
     // Orientation
