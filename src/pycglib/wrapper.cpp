@@ -70,6 +70,7 @@
 #include "core/line3.h"
 #include "core/ray3.h"
 #include "core/plane3.h"
+#include "core/triangle3.h"
 
 // Declared from original/distance.cpp
 // double run_distance(double x1, double y1, double x2, double y2);
@@ -887,6 +888,36 @@ py::class_<Ray3>(m, "Ray3")
                                   std::to_string(d.dx()) + ", " +
                                   std::to_string(d.dy()) + ", " +
                                   std::to_string(d.dz()) + "))";
+    });
+
+
+
+// --- Triangle3 ---
+py::class_<Triangle3>(m, "Triangle3")
+    .def(py::init<const Point3&, const Point3&, const Point3&>(),
+         py::arg("p"), py::arg("q"), py::arg("r"))
+    .def("vertex",           &triangle3_vertex,          py::arg("i"))
+    .def("__getitem__",      &triangle3_vertex,          py::arg("i"))
+    .def("supporting_plane", &triangle3_supporting_plane)
+    .def("is_degenerate",    &triangle3_is_degenerate)
+    .def("has_on",           &triangle3_has_on,          py::arg("p"))
+    .def("squared_area",     &triangle3_squared_area)
+    .def("bbox",             &triangle3_bbox)
+    .def("__eq__",           &triangle3_eq)
+    .def("__ne__",           &triangle3_neq)
+    .def("__repr__", [](const Triangle3& t) {
+        auto p = triangle3_vertex(t, 0);
+        auto q = triangle3_vertex(t, 1);
+        auto r = triangle3_vertex(t, 2);
+        return "Triangle3((" + std::to_string(p.x()) + ", " +
+                                std::to_string(p.y()) + ", " +
+                                std::to_string(p.z()) + "), (" +
+                                std::to_string(q.x()) + ", " +
+                                std::to_string(q.y()) + ", " +
+                                std::to_string(q.z()) + "), (" +
+                                std::to_string(r.x()) + ", " +
+                                std::to_string(r.y()) + ", " +
+                                std::to_string(r.z()) + "))";
     });
 
 

@@ -26,6 +26,7 @@ typedef Kernel::Segment_3 CGALSegment3;
 typedef Kernel::Line_3 CGALLine3;
 typedef Kernel::Plane_3 CGALPlane3;
 typedef Kernel::Ray_3 CGALRay3;
+typedef Kernel::Triangle_3 CGALTriangle3;
 
 
 
@@ -416,5 +417,15 @@ struct Ray3 {
         : r(CGALPoint3(p.x(), p.y(), p.z()), v.v) {}
     Ray3(const Point3& p, const Line3& l)
         : r(CGALPoint3(p.x(), p.y(), p.z()), l.l) {}
+};
+
+// ─── Triangle3 ────────────────────────────────────────────
+struct Triangle3 {
+    CGALTriangle3 t;
+    Triangle3(CGALTriangle3 tri) : t(tri) {}
+    Triangle3(const Point3& p, const Point3& q, const Point3& r)
+        : t(CGALPoint3(p.x(), p.y(), p.z()),
+            CGALPoint3(q.x(), q.y(), q.z()),
+            CGALPoint3(r.x(), r.y(), r.z())) {}
 };
 
