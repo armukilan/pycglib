@@ -28,6 +28,7 @@ typedef Kernel::Plane_3 CGALPlane3;
 typedef Kernel::Ray_3 CGALRay3;
 typedef Kernel::Triangle_3 CGALTriangle3;
 typedef Kernel::Sphere_3 CGALSphere3;
+typedef Kernel::Tetrahedron_3 CGALTetrahedron3;
 
 
 
@@ -465,3 +466,15 @@ struct Sphere3 {
             ori >= 0 ? CGAL::COUNTERCLOCKWISE : CGAL::CLOCKWISE) {}
 };
 
+
+// ─── Tetrahedron3 ─────────────────────────────────────────
+struct Tetrahedron3 {
+    CGALTetrahedron3 t;
+    Tetrahedron3(CGALTetrahedron3 tet) : t(tet) {}
+    Tetrahedron3(const Point3& p0, const Point3& p1,
+                 const Point3& p2, const Point3& p3)
+        : t(CGALPoint3(p0.x(), p0.y(), p0.z()),
+            CGALPoint3(p1.x(), p1.y(), p1.z()),
+            CGALPoint3(p2.x(), p2.y(), p2.z()),
+            CGALPoint3(p3.x(), p3.y(), p3.z())) {}
+};

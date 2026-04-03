@@ -72,6 +72,7 @@
 #include "core/plane3.h"
 #include "core/triangle3.h"
 #include "core/sphere3.h"
+#include "core/tetrahedron3.h"
 
 // Declared from original/distance.cpp
 // double run_distance(double x1, double y1, double x2, double y2);
@@ -958,6 +959,46 @@ py::class_<Sphere3>(m, "Sphere3")
                                     std::to_string(c.y()) + ", " +
                                     std::to_string(c.z()) + "), squared_radius=" +
                                     std::to_string(sphere3_squared_radius(s)) + ")";
+    });
+
+
+// --- Tetrahedron3 ---
+py::class_<Tetrahedron3>(m, "Tetrahedron3")
+    .def(py::init<const Point3&, const Point3&,
+                  const Point3&, const Point3&>(),
+         py::arg("p0"), py::arg("p1"), py::arg("p2"), py::arg("p3"))
+    .def("vertex",                &tetra3_vertex,                py::arg("i"))
+    .def("__getitem__",           &tetra3_vertex,                py::arg("i"))
+    .def("is_degenerate",         &tetra3_is_degenerate)
+    .def("orientation",           &tetra3_orientation)
+    .def("oriented_side",         &tetra3_oriented_side,         py::arg("p"))
+    .def("bounded_side",          &tetra3_bounded_side,          py::arg("p"))
+    .def("has_on_positive_side",  &tetra3_has_on_positive_side,  py::arg("p"))
+    .def("has_on_negative_side",  &tetra3_has_on_negative_side,  py::arg("p"))
+    .def("has_on_boundary",       &tetra3_has_on_boundary,       py::arg("p"))
+    .def("has_on_bounded_side",   &tetra3_has_on_bounded_side,   py::arg("p"))
+    .def("has_on_unbounded_side", &tetra3_has_on_unbounded_side, py::arg("p"))
+    .def("volume",                &tetra3_volume)
+    .def("bbox",                  &tetra3_bbox)
+    .def("__eq__",                &tetra3_eq)
+    .def("__ne__",                &tetra3_neq)
+    .def("__repr__", [](const Tetrahedron3& t) {
+        auto p0 = tetra3_vertex(t, 0);
+        auto p1 = tetra3_vertex(t, 1);
+        auto p2 = tetra3_vertex(t, 2);
+        auto p3 = tetra3_vertex(t, 3);
+        return "Tetrahedron3((" + std::to_string(p0.x()) + ", " +
+                                   std::to_string(p0.y()) + ", " +
+                                   std::to_string(p0.z()) + "), (" +
+                                   std::to_string(p1.x()) + ", " +
+                                   std::to_string(p1.y()) + ", " +
+                                   std::to_string(p1.z()) + "), (" +
+                                   std::to_string(p2.x()) + ", " +
+                                   std::to_string(p2.y()) + ", " +
+                                   std::to_string(p2.z()) + "), (" +
+                                   std::to_string(p3.x()) + ", " +
+                                   std::to_string(p3.y()) + ", " +
+                                   std::to_string(p3.z()) + "))";
     });
 
 
