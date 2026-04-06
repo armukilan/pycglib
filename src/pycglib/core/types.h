@@ -30,6 +30,7 @@ typedef Kernel::Triangle_3 CGALTriangle3;
 typedef Kernel::Sphere_3 CGALSphere3;
 typedef Kernel::Tetrahedron_3 CGALTetrahedron3;
 typedef Kernel::Iso_cuboid_3 CGALIsoCuboid3;
+typedef Kernel::Circle_3 CGALCircle3;
 
 
 
@@ -507,4 +508,28 @@ struct IsoCuboid3 {
     IsoCuboid3(const Bbox3& bbox)
         : c(CGALPoint3(bbox.xmin(), bbox.ymin(), bbox.zmin()),
             CGALPoint3(bbox.xmax(), bbox.ymax(), bbox.zmax())) {}
+};
+
+
+// ─── Circle3 ──────────────────────────────────────────────
+struct Circle3 {
+    CGALCircle3 c;
+    Circle3(CGALCircle3 circle) : c(circle) {}
+    // From center, squared radius, plane
+    Circle3(const Point3& center, double sq_r, const Plane3& plane)
+        : c(CGALPoint3(center.x(), center.y(), center.z()), sq_r, plane.p) {}
+    // From center, squared radius, normal vector
+    Circle3(const Point3& center, double sq_r, const Vector3& n)
+        : c(CGALPoint3(center.x(), center.y(), center.z()), sq_r, n.v) {}
+    // From three points
+    Circle3(const Point3& p, const Point3& q, const Point3& r)
+        : c(CGALPoint3(p.x(), p.y(), p.z()),
+            CGALPoint3(q.x(), q.y(), q.z()),
+            CGALPoint3(r.x(), r.y(), r.z())) {}
+    // From two spheres
+    Circle3(const Sphere3& s1, const Sphere3& s2) : c(s1.s, s2.s) {}
+    // From sphere and plane
+    Circle3(const Sphere3& s, const Plane3& plane) : c(s.s, plane.p) {}
+    // From plane and sphere
+    Circle3(const Plane3& plane, const Sphere3& s) : c(plane.p, s.s) {}
 };

@@ -1,5 +1,15 @@
 #include "core/sphere3.h"
 
+#include "core/circle3.h"
+
+Sphere3 sphere3_from_circle(const Circle3& c) {
+    return Sphere3(CGALSphere3(c.c));
+}
+
+bool sphere3_has_on_circle(const Sphere3& s, const Circle3& c) {
+    return s.s.has_on(c.c);
+}
+
 Point3 sphere3_center(const Sphere3& s) {
     auto c = s.s.center();
     return Point3(CGAL::to_double(c.x()),

@@ -4,6 +4,7 @@
 Plane3 plane3_from_ray(const Ray3& r, const Point3& p);
 Plane3 plane3_from_segment(const Segment3& s, const Point3& p);
 
+
 // --- Operations ---
 bool       plane3_eq(const Plane3& a, const Plane3& b);
 bool       plane3_neq(const Plane3& a, const Plane3& b);
@@ -27,3 +28,4 @@ bool plane3_has_on_positive_side(const Plane3& h, const Point3& p);
 bool plane3_has_on_negative_side(const Plane3& h, const Point3& p);
 bool plane3_has_on_line(const Plane3& h, const Line3& l);
 bool plane3_is_degenerate(const Plane3& h);
+bool plane3_has_on_circle(const Plane3& h, const Circle3& c);

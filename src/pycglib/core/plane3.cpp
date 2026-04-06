@@ -1,5 +1,11 @@
 #include "core/plane3.h"
 
+#include "core/circle3.h"
+
+bool plane3_has_on_circle(const Plane3& h, const Circle3& c) {
+    return h.p.has_on(c.c);
+}
+
 bool plane3_eq(const Plane3& a, const Plane3& b) {
     return a.p == b.p;
 }

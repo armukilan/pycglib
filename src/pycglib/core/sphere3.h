@@ -7,6 +7,8 @@ double sphere3_squared_radius(const Sphere3& s);
 int    sphere3_orientation(const Sphere3& s);   // 1=CCW, -1=CW
 bool   sphere3_eq(const Sphere3& a, const Sphere3& b);
 bool   sphere3_neq(const Sphere3& a, const Sphere3& b);
+Sphere3 sphere3_from_circle(const Circle3& c);
+bool    sphere3_has_on_circle(const Sphere3& s, const Circle3& c);
 
 // --- Predicates ---
 bool sphere3_is_degenerate(const Sphere3& s);

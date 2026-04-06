@@ -74,6 +74,7 @@
 #include "core/sphere3.h"
 #include "core/tetrahedron3.h"
 #include "core/iso_cuboid3.h"
+#include "core/circle3.h"
 
 // Declared from original/distance.cpp
 // double run_distance(double x1, double y1, double x2, double y2);
@@ -775,6 +776,7 @@ py::class_<Plane3>(m, "Plane3")
     .def_property_readonly("b", &Plane3::b)
     .def_property_readonly("c", &Plane3::c)
     .def_property_readonly("d", &Plane3::d)
+    .def("has_on_circle", &plane3_has_on_circle, py::arg("c"))
     .def("perpendicular_line",   &plane3_perpendicular_line,   py::arg("p"))
     .def("projection",           &plane3_projection,           py::arg("p"))
     .def("opposite",             &plane3_opposite)
@@ -938,6 +940,8 @@ py::class_<Sphere3>(m, "Sphere3")
          py::arg("p"), py::arg("q"), py::arg("orientation") = 1)
     .def(py::init<const Point3&, int>(),
          py::arg("center"), py::arg("orientation") = 1)
+    .def_static("from_circle", &sphere3_from_circle, py::arg("c"))
+    .def("has_on_circle",      &sphere3_has_on_circle, py::arg("c"))
     .def("center",                &sphere3_center)
     .def("squared_radius",        &sphere3_squared_radius)
     .def("orientation",           &sphere3_orientation)
@@ -1044,6 +1048,41 @@ py::class_<IsoCuboid3>(m, "IsoCuboid3")
                ", xmax=" + std::to_string(iso_cuboid3_xmax(c)) +
                ", ymax=" + std::to_string(iso_cuboid3_ymax(c)) +
                ", zmax=" + std::to_string(iso_cuboid3_zmax(c)) + ")";
+    });
+
+
+    // --- Circle3 ---
+py::class_<Circle3>(m, "Circle3")
+    .def(py::init<const Point3&, double, const Plane3&>(),
+         py::arg("center"), py::arg("sq_r"), py::arg("plane"))
+    .def(py::init<const Point3&, double, const Vector3&>(),
+         py::arg("center"), py::arg("sq_r"), py::arg("n"))
+    .def(py::init<const Point3&, const Point3&, const Point3&>(),
+         py::arg("p"), py::arg("q"), py::arg("r"))
+    .def(py::init<const Sphere3&, const Sphere3&>(),
+         py::arg("s1"), py::arg("s2"))
+    .def(py::init<const Sphere3&, const Plane3&>(),
+         py::arg("s"), py::arg("plane"))
+    .def(py::init<const Plane3&, const Sphere3&>(),
+         py::arg("plane"), py::arg("s"))
+    .def("center",                              &circle3_center)
+    .def("squared_radius",                      &circle3_squared_radius)
+    .def("supporting_plane",                    &circle3_supporting_plane)
+    .def("diametral_sphere",                    &circle3_diametral_sphere)
+    .def("area_divided_by_pi",                  &circle3_area_divided_by_pi)
+    .def("approximate_area",                    &circle3_approximate_area)
+    .def("squared_length_divided_by_pi_square", &circle3_squared_length_divided_by_pi_square)
+    .def("approximate_squared_length",          &circle3_approximate_squared_length)
+    .def("has_on",                              &circle3_has_on, py::arg("p"))
+    .def("bbox",                                &circle3_bbox)
+    .def("__eq__",                              &circle3_eq)
+    .def("__ne__",                              &circle3_neq)
+    .def("__repr__", [](const Circle3& c) {
+        auto ct = circle3_center(c);
+        return "Circle3(center=(" + std::to_string(ct.x()) + ", " +
+                                    std::to_string(ct.y()) + ", " +
+                                    std::to_string(ct.z()) + "), squared_radius=" +
+                                    std::to_string(circle3_squared_radius(c)) + ")";
     });
 
 
