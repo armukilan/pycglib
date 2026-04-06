@@ -75,6 +75,8 @@
 #include "core/tetrahedron3.h"
 #include "core/iso_cuboid3.h"
 #include "core/circle3.h"
+#include "core/weighted_point3.h"
+#include "core/aff_transformation3.h"
 
 // Declared from original/distance.cpp
 // double run_distance(double x1, double y1, double x2, double y2);
@@ -672,6 +674,9 @@ py::class_<Point3>(m, "Point3")
     .def("__gt__",      &point3_gt)
     .def("__le__",      &point3_le)
     .def("__ge__",      &point3_ge)
+    .def("transform", [](const Point3& p, const AffTransformation3& t) {
+    return aff3_transform_point(t, p);
+    }, py::arg("t"))
     .def("__repr__", [](const Point3& p) {
         return "Point3(" + std::to_string(p.x()) + ", " +
                            std::to_string(p.y()) + ", " +
@@ -709,6 +714,9 @@ py::class_<Vector3>(m, "Vector3")
     .def("direction", [](const Vector3& v) {
     return Direction3(CGALDirection3(v.v));
     })
+    .def("transform", [](const Vector3& v, const AffTransformation3& t) {
+    return aff3_transform_vector(t, v);
+    }, py::arg("t"))
     .def("__repr__", [](const Vector3& v) {
         return "Vector3(" + std::to_string(v.x()) + ", " +
                             std::to_string(v.y()) + ", " +
@@ -733,6 +741,9 @@ py::class_<Direction3>(m, "Direction3")
     .def("__neg__",                 &direction3_opposite)
     .def("__eq__",                  &direction3_eq)
     .def("__ne__",                  &direction3_neq)
+    .def("transform", [](const Direction3& d, const AffTransformation3& t) {
+    return aff3_transform_direction(t, d);
+    }, py::arg("t"))
     .def("__repr__", [](const Direction3& d) {
         return "Direction3(" + std::to_string(d.dx()) + ", " +
                                std::to_string(d.dy()) + ", " +
@@ -795,6 +806,9 @@ py::class_<Plane3>(m, "Plane3")
     .def("is_degenerate",        &plane3_is_degenerate)
     .def("__eq__",               &plane3_eq)
     .def("__ne__",               &plane3_neq)
+    .def("transform", [](const Plane3& p, const AffTransformation3& t) {
+    return aff3_transform_plane(t, p);
+    }, py::arg("t"))
     .def("__repr__", [](const Plane3& h) {
         return "Plane3(a=" + std::to_string(h.a()) +
                ", b=" + std::to_string(h.b()) +
@@ -824,6 +838,9 @@ py::class_<Line3>(m, "Line3")
     .def("direction",           &line3_direction)
     .def("__eq__",              &line3_eq)
     .def("__ne__",              &line3_neq)
+    .def("transform", [](const Line3& l, const AffTransformation3& t) {
+    return Line3(l.l.transform(t.t));
+    }, py::arg("t"))
     .def("__repr__", [](const Line3& l) {
         auto v = line3_to_vector(l);
         return "Line3(direction=(" + std::to_string(v.x()) + ", " +
@@ -852,6 +869,9 @@ py::class_<Segment3>(m, "Segment3")
     .def("bbox",            &segment3_bbox)
     .def("__eq__",          &segment3_eq)
     .def("__ne__",          &segment3_neq)
+    .def("transform", [](const Segment3& s, const AffTransformation3& t) {
+    return Segment3(s.s.transform(t.t));
+    }, py::arg("t"))
     .def("__repr__", [](const Segment3& s) {
         auto src = segment3_source(s);
         auto tgt = segment3_target(s);
@@ -884,6 +904,9 @@ py::class_<Ray3>(m, "Ray3")
     .def("has_on",          &ray3_has_on,         py::arg("p"))
     .def("__eq__",          &ray3_eq)
     .def("__ne__",          &ray3_neq)
+    .def("transform", [](const Ray3& r, const AffTransformation3& t) {
+    return Ray3(r.r.transform(t.t));
+    }, py::arg("t"))
     .def("__repr__", [](const Ray3& r) {
         auto s = ray3_source(r);
         auto d = ray3_direction(r);
@@ -910,6 +933,9 @@ py::class_<Triangle3>(m, "Triangle3")
     .def("bbox",             &triangle3_bbox)
     .def("__eq__",           &triangle3_eq)
     .def("__ne__",           &triangle3_neq)
+    .def("transform", [](const Triangle3& tri, const AffTransformation3& t) {
+    return Triangle3(tri.t.transform(t.t));
+    }, py::arg("t"))
     .def("__repr__", [](const Triangle3& t) {
         auto p = triangle3_vertex(t, 0);
         auto q = triangle3_vertex(t, 1);
@@ -958,6 +984,9 @@ py::class_<Sphere3>(m, "Sphere3")
     .def("bbox",                  &sphere3_bbox)
     .def("__eq__",                &sphere3_eq)
     .def("__ne__",                &sphere3_neq)
+    .def("orthogonal_transform", [](const Sphere3& s, const AffTransformation3& t) {
+    return Sphere3(s.s.orthogonal_transform(t.t));
+    }, py::arg("t"))
     .def("__repr__", [](const Sphere3& s) {
         auto c = sphere3_center(s);
         return "Sphere3(center=(" + std::to_string(c.x()) + ", " +
@@ -1041,6 +1070,9 @@ py::class_<IsoCuboid3>(m, "IsoCuboid3")
     .def("bbox",                  &iso_cuboid3_bbox)
     .def("__eq__",                &iso_cuboid3_eq)
     .def("__ne__",                &iso_cuboid3_neq)
+    .def("transform", [](const IsoCuboid3& c, const AffTransformation3& t) {
+    return IsoCuboid3(c.c.transform(t.t));
+    }, py::arg("t"))
     .def("__repr__", [](const IsoCuboid3& c) {
         return "IsoCuboid3(xmin=" + std::to_string(iso_cuboid3_xmin(c)) +
                ", ymin=" + std::to_string(iso_cuboid3_ymin(c)) +
@@ -1085,5 +1117,72 @@ py::class_<Circle3>(m, "Circle3")
                                     std::to_string(circle3_squared_radius(c)) + ")";
     });
 
+
+
+
+
+// --- WeightedPoint3 ---
+py::class_<WeightedPoint3>(m, "WeightedPoint3")
+    .def(py::init<>())
+    .def(py::init<const Point3&>(),         py::arg("p"))
+    .def(py::init<const Point3&, double>(), py::arg("p"), py::arg("w"))
+    .def(py::init<double, double, double>(), py::arg("x"), py::arg("y"), py::arg("z"))
+    .def("point",  &wp3_point)
+    .def("weight", &wp3_weight)
+    .def("__eq__", &wp3_eq)
+    .def("__ne__", &wp3_neq)
+    .def("__repr__", [](const WeightedPoint3& wp) {
+        auto p = wp3_point(wp);
+        return "WeightedPoint3(point=(" +
+               std::to_string(p.x()) + ", " +
+               std::to_string(p.y()) + ", " +
+               std::to_string(p.z()) + "), weight=" +
+               std::to_string(wp3_weight(wp)) + ")";
+    });
+
+
+
+
+// --- AffTransformation3 ---
+py::class_<AffTransformation3>(m, "AffTransformation3")
+    // Identity
+    .def(py::init<>())
+    // Translation from vector
+    .def(py::init<const Vector3&>(),         py::arg("v"))
+    // Scaling from scalar
+    .def(py::init<double>(),                 py::arg("s"))
+    // General affine with translation (12 params)
+    .def(py::init<double, double, double, double,
+                  double, double, double, double,
+                  double, double, double, double>(),
+         py::arg("m00"), py::arg("m01"), py::arg("m02"), py::arg("m03"),
+         py::arg("m10"), py::arg("m11"), py::arg("m12"), py::arg("m13"),
+         py::arg("m20"), py::arg("m21"), py::arg("m22"), py::arg("m23"))
+    // General linear no translation (9 params)
+    .def(py::init<double, double, double,
+                  double, double, double,
+                  double, double, double>(),
+         py::arg("m00"), py::arg("m01"), py::arg("m02"),
+         py::arg("m10"), py::arg("m11"), py::arg("m12"),
+         py::arg("m20"), py::arg("m21"), py::arg("m22"))
+    .def("transform_point",     &aff3_transform_point,     py::arg("p"))
+    .def("transform_vector",    &aff3_transform_vector,    py::arg("v"))
+    .def("transform_direction", &aff3_transform_direction, py::arg("d"))
+    .def("transform_plane",     &aff3_transform_plane,     py::arg("p"))
+    .def("__call__",            &aff3_transform_point,     py::arg("p"))
+    .def("inverse",             &aff3_inverse)
+    .def("is_even",             &aff3_is_even)
+    .def("is_odd",              &aff3_is_odd)
+    .def("is_scaling",          &aff3_is_scaling)
+    .def("is_translation",      &aff3_is_translation)
+    .def("cartesian",           &aff3_cartesian,   py::arg("i"), py::arg("j"))
+    .def("homogeneous",         &aff3_homogeneous, py::arg("i"), py::arg("j"))
+    .def("__mul__",             &aff3_mul)
+    .def("__eq__",              &aff3_eq)
+    .def("__repr__", [](const AffTransformation3& t) {
+        return "AffTransformation3(m00=" + std::to_string(aff3_cartesian(t, 0, 0)) +
+               ", m11=" + std::to_string(aff3_cartesian(t, 1, 1)) +
+               ", m22=" + std::to_string(aff3_cartesian(t, 2, 2)) + ")";
+    });
 
 }

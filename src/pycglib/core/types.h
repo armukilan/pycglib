@@ -31,6 +31,8 @@ typedef Kernel::Sphere_3 CGALSphere3;
 typedef Kernel::Tetrahedron_3 CGALTetrahedron3;
 typedef Kernel::Iso_cuboid_3 CGALIsoCuboid3;
 typedef Kernel::Circle_3 CGALCircle3;
+typedef Kernel::Weighted_point_3 CGALWeightedPoint3;
+typedef Kernel::Aff_transformation_3 CGALAffTransformation3;
 
 
 
@@ -532,4 +534,52 @@ struct Circle3 {
     Circle3(const Sphere3& s, const Plane3& plane) : c(s.s, plane.p) {}
     // From plane and sphere
     Circle3(const Plane3& plane, const Sphere3& s) : c(plane.p, s.s) {}
+};
+
+
+// ─── WeightedPoint3 ───────────────────────────────────────
+struct WeightedPoint3 {
+    CGALWeightedPoint3 wp;
+    WeightedPoint3(CGALWeightedPoint3 p) : wp(p) {}
+    // From origin
+    WeightedPoint3() : wp(CGAL::ORIGIN) {}
+    // From point only, weight 0
+    WeightedPoint3(const Point3& p)
+        : wp(CGALPoint3(p.x(), p.y(), p.z())) {}
+    // From point and weight
+    WeightedPoint3(const Point3& p, double w)
+        : wp(CGALPoint3(p.x(), p.y(), p.z()), w) {}
+    // From x, y, z coordinates, weight 0
+    WeightedPoint3(double x, double y, double z)
+        : wp(CGALPoint3(x, y, z)) {}
+};
+
+
+// ─── AffTransformation3 ───────────────────────────────────
+struct AffTransformation3 {
+    CGALAffTransformation3 t;
+    AffTransformation3(CGALAffTransformation3 t) : t(t) {}
+    // Identity
+    AffTransformation3()
+        : t(CGAL::IDENTITY) {}
+    // Translation
+    AffTransformation3(const Vector3& v)
+        : t(CGAL::TRANSLATION, v.v) {}
+    // Scaling
+    AffTransformation3(double s)
+        : t(CGAL::SCALING, s) {}
+    // General affine with translation (12 params)
+    AffTransformation3(double m00, double m01, double m02, double m03,
+                       double m10, double m11, double m12, double m13,
+                       double m20, double m21, double m22, double m23)
+        : t(m00, m01, m02, m03,
+            m10, m11, m12, m13,
+            m20, m21, m22, m23) {}
+    // General linear no translation (9 params)
+    AffTransformation3(double m00, double m01, double m02,
+                       double m10, double m11, double m12,
+                       double m20, double m21, double m22)
+        : t(m00, m01, m02,
+            m10, m11, m12,
+            m20, m21, m22) {}
 };
