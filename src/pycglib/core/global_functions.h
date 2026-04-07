@@ -207,3 +207,64 @@ int compare_squared_radius_2(const Point3& p, const Point3& q, double sr);
 int compare_squared_radius_3(const Point3& p, const Point3& q, const Point3& r, double sr);
 int compare_squared_radius_4(const Point3& p, const Point3& q,
                               const Point3& r, const Point3& s, double sr);
+
+// ============================================================
+// COMPARE X
+// ============================================================
+int compare_x_pt2(const Point2& p, const Point2& q);
+int compare_x_pt3(const Point3& p, const Point3& q);
+int compare_x_pt2_l1_l2(const Point2& p, const Line2& l1, const Line2& l2);
+int compare_x_l_h1_h2(const Line2& l, const Line2& h1, const Line2& h2);
+int compare_x_l1_l2_h1_h2(const Line2& l1, const Line2& l2,
+                            const Line2& h1, const Line2& h2);
+
+// ============================================================
+// COMPARE XY
+// ============================================================
+int compare_xy_pt2(const Point2& p, const Point2& q);
+int compare_xy_pt3(const Point3& p, const Point3& q);
+
+// ============================================================
+// COMPARE XYZ
+// ============================================================
+int compare_xyz_pt3(const Point3& p, const Point3& q);
+
+// ============================================================
+// COMPARE X AT Y
+// ============================================================
+int compare_x_at_y_pt_h(const Point2& p, const Line2& h);
+int compare_x_at_y_pt_h1_h2(const Point2& p, const Line2& h1, const Line2& h2);
+int compare_x_at_y_l1_l2_h(const Line2& l1, const Line2& l2, const Line2& h);
+int compare_x_at_y_l1_l2_h1_h2(const Line2& l1, const Line2& l2,
+                                 const Line2& h1, const Line2& h2);
+
+// ============================================================
+// COMPARE Y
+// ============================================================
+int compare_y_pt2(const Point2& p, const Point2& q);
+int compare_y_pt3(const Point3& p, const Point3& q);
+int compare_y_pt2_l1_l2(const Point2& p, const Line2& l1, const Line2& l2);
+int compare_y_l_h1_h2(const Line2& l, const Line2& h1, const Line2& h2);
+int compare_y_l1_l2_h1_h2(const Line2& l1, const Line2& l2,
+                            const Line2& h1, const Line2& h2);
+
+// ============================================================
+// COMPARE Y AT X
+// ============================================================
+int compare_y_at_x_pt_h(const Point2& p, const Line2& h);
+int compare_y_at_x_pt_h1_h2(const Point2& p, const Line2& h1, const Line2& h2);
+int compare_y_at_x_l1_l2_h(const Line2& l1, const Line2& l2, const Line2& h);
+int compare_y_at_x_l1_l2_h1_h2(const Line2& l1, const Line2& l2,
+                                 const Line2& h1, const Line2& h2);
+int compare_y_at_x_pt_seg(const Point2& p, const Segment2& s);
+int compare_y_at_x_pt_seg1_seg2(const Point2& p, const Segment2& s1, const Segment2& s2);
+
+// ============================================================
+// COMPARE YX
+// ============================================================
+int compare_yx_pt2(const Point2& p, const Point2& q);
+
+// ============================================================
+// COMPARE Z
+// ============================================================
+int compare_z_pt3(const Point3& p, const Point3& q);

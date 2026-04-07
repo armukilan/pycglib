@@ -453,3 +453,115 @@ int compare_squared_radius_4(const Point3& p, const Point3& q,
                               const Point3& r, const Point3& s, double sr) {
     return cmp_to_int(CGAL::compare_squared_radius(toP3(p), toP3(q), toP3(r), toP3(s), sr));
 }
+
+// ============================================================
+// COMPARE X
+// ============================================================
+int compare_x_pt2(const Point2& p, const Point2& q) {
+    return cmp_to_int(CGAL::compare_x(toP2(p), toP2(q)));
+}
+int compare_x_pt3(const Point3& p, const Point3& q) {
+    return cmp_to_int(CGAL::compare_x(toP3(p), toP3(q)));
+}
+int compare_x_pt2_l1_l2(const Point2& p, const Line2& l1, const Line2& l2) {
+    return cmp_to_int(CGAL::compare_x(toP2(p), l1.l, l2.l));
+}
+int compare_x_l_h1_h2(const Line2& l, const Line2& h1, const Line2& h2) {
+    return cmp_to_int(CGAL::compare_x(l.l, h1.l, h2.l));
+}
+int compare_x_l1_l2_h1_h2(const Line2& l1, const Line2& l2,
+                            const Line2& h1, const Line2& h2) {
+    return cmp_to_int(CGAL::compare_x(l1.l, l2.l, h1.l, h2.l));
+}
+
+// ============================================================
+// COMPARE XY
+// ============================================================
+int compare_xy_pt2(const Point2& p, const Point2& q) {
+    return cmp_to_int(CGAL::compare_xy(toP2(p), toP2(q)));
+}
+int compare_xy_pt3(const Point3& p, const Point3& q) {
+    return cmp_to_int(CGAL::compare_xy(toP3(p), toP3(q)));
+}
+
+// ============================================================
+// COMPARE XYZ
+// ============================================================
+int compare_xyz_pt3(const Point3& p, const Point3& q) {
+    return cmp_to_int(CGAL::compare_xyz(toP3(p), toP3(q)));
+}
+
+// ============================================================
+// COMPARE X AT Y
+// ============================================================
+int compare_x_at_y_pt_h(const Point2& p, const Line2& h) {
+    return cmp_to_int(CGAL::compare_x_at_y(toP2(p), h.l));
+}
+int compare_x_at_y_pt_h1_h2(const Point2& p, const Line2& h1, const Line2& h2) {
+    return cmp_to_int(CGAL::compare_x_at_y(toP2(p), h1.l, h2.l));
+}
+int compare_x_at_y_l1_l2_h(const Line2& l1, const Line2& l2, const Line2& h) {
+    return cmp_to_int(CGAL::compare_x_at_y(l1.l, l2.l, h.l));
+}
+int compare_x_at_y_l1_l2_h1_h2(const Line2& l1, const Line2& l2,
+                                 const Line2& h1, const Line2& h2) {
+    return cmp_to_int(CGAL::compare_x_at_y(l1.l, l2.l, h1.l, h2.l));
+}
+
+// ============================================================
+// COMPARE Y
+// ============================================================
+int compare_y_pt2(const Point2& p, const Point2& q) {
+    return cmp_to_int(CGAL::compare_y(toP2(p), toP2(q)));
+}
+int compare_y_pt3(const Point3& p, const Point3& q) {
+    return cmp_to_int(CGAL::compare_y(toP3(p), toP3(q)));
+}
+int compare_y_pt2_l1_l2(const Point2& p, const Line2& l1, const Line2& l2) {
+    return cmp_to_int(CGAL::compare_y(toP2(p), l1.l, l2.l));
+}
+int compare_y_l_h1_h2(const Line2& l, const Line2& h1, const Line2& h2) {
+    return cmp_to_int(CGAL::compare_y(l.l, h1.l, h2.l));
+}
+int compare_y_l1_l2_h1_h2(const Line2& l1, const Line2& l2,
+                            const Line2& h1, const Line2& h2) {
+    return cmp_to_int(CGAL::compare_y(l1.l, l2.l, h1.l, h2.l));
+}
+
+// ============================================================
+// COMPARE Y AT X
+// ============================================================
+int compare_y_at_x_pt_h(const Point2& p, const Line2& h) {
+    return cmp_to_int(CGAL::compare_y_at_x(toP2(p), h.l));
+}
+int compare_y_at_x_pt_h1_h2(const Point2& p, const Line2& h1, const Line2& h2) {
+    return cmp_to_int(CGAL::compare_y_at_x(toP2(p), h1.l, h2.l));
+}
+int compare_y_at_x_l1_l2_h(const Line2& l1, const Line2& l2, const Line2& h) {
+    return cmp_to_int(CGAL::compare_y_at_x(l1.l, l2.l, h.l));
+}
+int compare_y_at_x_l1_l2_h1_h2(const Line2& l1, const Line2& l2,
+                                 const Line2& h1, const Line2& h2) {
+    return cmp_to_int(CGAL::compare_y_at_x(l1.l, l2.l, h1.l, h2.l));
+}
+int compare_y_at_x_pt_seg(const Point2& p, const Segment2& s) {
+    return cmp_to_int(CGAL::compare_y_at_x(toP2(p), s.s));
+}
+int compare_y_at_x_pt_seg1_seg2(const Point2& p,
+                                 const Segment2& s1, const Segment2& s2) {
+    return cmp_to_int(CGAL::compare_y_at_x(toP2(p), s1.s, s2.s));
+}
+
+// ============================================================
+// COMPARE YX
+// ============================================================
+int compare_yx_pt2(const Point2& p, const Point2& q) {
+    return cmp_to_int(CGAL::compare_yx(toP2(p), toP2(q)));
+}
+
+// ============================================================
+// COMPARE Z
+// ============================================================
+int compare_z_pt3(const Point3& p, const Point3& q) {
+    return cmp_to_int(CGAL::compare_z(toP3(p), toP3(q)));
+}

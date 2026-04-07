@@ -1617,4 +1617,96 @@ m.def("compare_squared_radius", &compare_squared_radius_3,
 m.def("compare_squared_radius", &compare_squared_radius_4,
       py::arg("p"), py::arg("q"), py::arg("r"), py::arg("s"), py::arg("sr"),
       "Compare squared radius of sphere through p,q,r,s to sr");
+
+// --- compare_x ---
+m.def("compare_x", &compare_x_pt2,
+      py::arg("p"), py::arg("q"),
+      "Compare x-coordinates of two 2D points. Returns -1, 0, or 1");
+m.def("compare_x", &compare_x_pt3,
+      py::arg("p"), py::arg("q"),
+      "Compare x-coordinates of two 3D points");
+m.def("compare_x", &compare_x_pt2_l1_l2,
+      py::arg("p"), py::arg("l1"), py::arg("l2"),
+      "Compare x of p and intersection of l1,l2");
+m.def("compare_x", &compare_x_l_h1_h2,
+      py::arg("l"), py::arg("h1"), py::arg("h2"),
+      "Compare x of intersection of l with h1 and h2");
+m.def("compare_x", &compare_x_l1_l2_h1_h2,
+      py::arg("l1"), py::arg("l2"), py::arg("h1"), py::arg("h2"),
+      "Compare x of intersection of l1,l2 and intersection of h1,h2");
+
+// --- compare_xy ---
+m.def("compare_xy", &compare_xy_pt2,
+      py::arg("p"), py::arg("q"),
+      "Compare 2D points lexicographically in xy order");
+m.def("compare_xy", &compare_xy_pt3,
+      py::arg("p"), py::arg("q"),
+      "Compare 3D points lexicographically in xy order");
+
+// --- compare_xyz ---
+m.def("compare_xyz", &compare_xyz_pt3,
+      py::arg("p"), py::arg("q"),
+      "Compare 3D points lexicographically in xyz order");
+
+// --- compare_x_at_y ---
+m.def("compare_x_at_y", &compare_x_at_y_pt_h,
+      py::arg("p"), py::arg("h"),
+      "Compare x of p and horizontal projection of p on h");
+m.def("compare_x_at_y", &compare_x_at_y_pt_h1_h2,
+      py::arg("p"), py::arg("h1"), py::arg("h2"),
+      "Compare x of horizontal projections of p on h1 and h2");
+m.def("compare_x_at_y", &compare_x_at_y_l1_l2_h,
+      py::arg("l1"), py::arg("l2"), py::arg("h"),
+      "Compare x of intersection of l1,l2 and its projection on h");
+m.def("compare_x_at_y", &compare_x_at_y_l1_l2_h1_h2,
+      py::arg("l1"), py::arg("l2"), py::arg("h1"), py::arg("h2"),
+      "Compare x of projections of intersection of l1,l2 on h1 and h2");
+
+// --- compare_y ---
+m.def("compare_y", &compare_y_pt2,
+      py::arg("p"), py::arg("q"),
+      "Compare y-coordinates of two 2D points");
+m.def("compare_y", &compare_y_pt3,
+      py::arg("p"), py::arg("q"),
+      "Compare y-coordinates of two 3D points");
+m.def("compare_y", &compare_y_pt2_l1_l2,
+      py::arg("p"), py::arg("l1"), py::arg("l2"),
+      "Compare y of p and intersection of l1,l2");
+m.def("compare_y", &compare_y_l_h1_h2,
+      py::arg("l"), py::arg("h1"), py::arg("h2"),
+      "Compare y of intersection of l with h1 and h2");
+m.def("compare_y", &compare_y_l1_l2_h1_h2,
+      py::arg("l1"), py::arg("l2"), py::arg("h1"), py::arg("h2"),
+      "Compare y of intersection of l1,l2 and intersection of h1,h2");
+
+// --- compare_y_at_x ---
+m.def("compare_y_at_x", &compare_y_at_x_pt_h,
+      py::arg("p"), py::arg("h"),
+      "Compare y of p and vertical projection of p on h");
+m.def("compare_y_at_x", &compare_y_at_x_pt_h1_h2,
+      py::arg("p"), py::arg("h1"), py::arg("h2"),
+      "Compare y of vertical projections of p on h1 and h2");
+m.def("compare_y_at_x", &compare_y_at_x_l1_l2_h,
+      py::arg("l1"), py::arg("l2"), py::arg("h"),
+      "Compare y of intersection of l1,l2 and its projection on h");
+m.def("compare_y_at_x", &compare_y_at_x_l1_l2_h1_h2,
+      py::arg("l1"), py::arg("l2"), py::arg("h1"), py::arg("h2"),
+      "Compare y of projections of intersection of l1,l2 on h1 and h2");
+m.def("compare_y_at_x", &compare_y_at_x_pt_seg,
+      py::arg("p"), py::arg("s"),
+      "Compare y of p and vertical projection of p on segment s");
+m.def("compare_y_at_x", &compare_y_at_x_pt_seg1_seg2,
+      py::arg("p"), py::arg("s1"), py::arg("s2"),
+      "Compare y of vertical projections of p on s1 and s2");
+
+// --- compare_yx ---
+m.def("compare_yx", &compare_yx_pt2,
+      py::arg("p"), py::arg("q"),
+      "Compare 2D points lexicographically in yx order");
+
+// --- compare_z ---
+m.def("compare_z", &compare_z_pt3,
+      py::arg("p"), py::arg("q"),
+      "Compare z-coordinates of two 3D points");
+
 }
