@@ -80,6 +80,7 @@
 #include <CGAL/enum.h>
 #include "core/global_functions.h"
 #include <pybind11/stl.h>
+#include "core/polygon2.h"
 
 // Declared from original/distance.cpp
 // double run_distance(double x1, double y1, double x2, double y2);
@@ -2087,5 +2088,11 @@ m.def("x_equal", &x_equal_3, py::arg("p"), py::arg("q"));
 m.def("y_equal", &y_equal_2, py::arg("p"), py::arg("q"));
 m.def("y_equal", &y_equal_3, py::arg("p"), py::arg("q"));
 m.def("z_equal", &z_equal_3, py::arg("p"), py::arg("q"));
+
+bind_general_polygon_with_holes2(m);  // bind base first
+bind_polygon2(m);
+bind_polygon_with_holes2(m);
+bind_multipolygon_with_holes2(m);
+bind_polygon_global_functions(m);
 
 }
