@@ -43,7 +43,8 @@ jobs:
           # Add cp314-* after stable release
           CIBW_SKIP: "*-win32 *-manylinux_i686 *-musllinux*"
           CIBW_ARCHS: auto64
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          # CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          # CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_34
 
           # Install CGAL inside Linux container
           # CIBW_BEFORE_ALL_LINUX: |
@@ -54,12 +55,12 @@ jobs:
             dnf install -y epel-release
             dnf install -y boost-devel gmp-devel mpfr-devel
             curl -L https://github.com/CGAL/cgal/releases/download/v6.0.1/CGAL-6.0.1-library.tar.xz | tar -xJ -C /usr/local --strip-components=1
-            echo "=== CGAL version header ==="
-            cat /usr/local/include/CGAL/version.h | grep CGAL_VERSION_STR
-            echo "=== Multipolygon header exists? ==="
-            ls /usr/local/include/CGAL/Multipolygon_with_holes_2.h || echo "NOT FOUND"
-            echo "=== Any old CGAL installed? ==="
-            find /usr -name "CGALConfig.cmake" 2>/dev/null
+          # # echo "=== CGAL version header ==="
+          # cat /usr/local/include/CGAL/version.h | grep CGAL_VERSION_STR
+          # echo "=== Multipolygon header exists? ==="
+          # ls /usr/local/include/CGAL/Multipolygon_with_holes_2.h || echo "NOT FOUND"
+          # echo "=== Any old CGAL installed? ==="
+          # find /usr -name "CGALConfig.cmake" 2>/dev/null
 
           # Set Windows environment so cmake can find CGAL
           # Uses CMAKE_PREFIX_PATH instead of CGAL_DIR for more reliable detection
