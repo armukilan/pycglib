@@ -840,6 +840,12 @@ bool has_smaller_signed_distance_to_plane_p(const Point3& p, const Point3& q, co
 // const T* variant_get(const Variant& v) {
 //     return std::get_if<T>(&v);
 // }
+// #include <boost/variant.hpp>
+
+// template<typename T, typename Variant>
+// const T* variant_get(const Variant& v) {
+//     return boost::get<T>(&v);
+// }
 #include <variant>
 #include <boost/variant.hpp>
 
@@ -1553,3 +1559,281 @@ Vector3 normal_3(const Point3& p, const Point3& q, const Point3& r) {
                    CGAL::to_double(v.y()),
                    CGAL::to_double(v.z()));
 }
+
+
+#include <CGAL/squared_distance_2.h>
+#include <CGAL/squared_distance_3.h>
+
+// ============================================================
+// ORTHOGONAL VECTOR
+// ============================================================
+Vector3 orthogonal_vector_plane(const Plane3& p) {
+    auto v = CGAL::orthogonal_vector(p.p);
+    return Vector3(CGAL::to_double(v.x()),
+                   CGAL::to_double(v.y()),
+                   CGAL::to_double(v.z()));
+}
+
+Vector3 orthogonal_vector_pts(const Point3& p, const Point3& q, const Point3& r) {
+    auto v = CGAL::orthogonal_vector(toP3(p), toP3(q), toP3(r));
+    return Vector3(CGAL::to_double(v.x()),
+                   CGAL::to_double(v.y()),
+                   CGAL::to_double(v.z()));
+}
+
+// ============================================================
+// ORIENTATION
+// ============================================================
+int orientation_pt2(const Point2& p, const Point2& q, const Point2& r) {
+    return cmp_to_int(CGAL::orientation(toP2(p), toP2(q), toP2(r)));
+}
+
+int orientation_vec2(const Vector2& u, const Vector2& v) {
+    return cmp_to_int(CGAL::orientation(u.v, v.v));
+}
+
+int orientation_pt3(const Point3& p, const Point3& q,
+                    const Point3& r, const Point3& s) {
+    return cmp_to_int(CGAL::orientation(toP3(p), toP3(q), toP3(r), toP3(s)));
+}
+
+int orientation_vec3(const Vector3& u, const Vector3& v, const Vector3& w) {
+    return cmp_to_int(CGAL::orientation(u.v, v.v, w.v));
+}
+
+// ============================================================
+// PARALLEL
+// ============================================================
+bool parallel_line2(const Line2& l1, const Line2& l2) {
+    return CGAL::parallel(l1.l, l2.l);
+}
+bool parallel_ray2(const Ray2& r1, const Ray2& r2) {
+    return CGAL::parallel(r1.r, r2.r);
+}
+bool parallel_seg2(const Segment2& s1, const Segment2& s2) {
+    return CGAL::parallel(s1.s, s2.s);
+}
+bool parallel_line3(const Line3& l1, const Line3& l2) {
+    return CGAL::parallel(l1.l, l2.l);
+}
+bool parallel_plane3(const Plane3& h1, const Plane3& h2) {
+    return CGAL::parallel(h1.p, h2.p);
+}
+bool parallel_ray3(const Ray3& r1, const Ray3& r2) {
+    return CGAL::parallel(r1.r, r2.r);
+}
+bool parallel_seg3(const Segment3& s1, const Segment3& s2) {
+    return CGAL::parallel(s1.s, s2.s);
+}
+
+// ============================================================
+// RADICAL PLANE / LINE
+// ============================================================
+Plane3 radical_plane(const Sphere3& s1, const Sphere3& s2) {
+    return Plane3(CGAL::radical_plane(s1.s, s2.s));
+}
+
+Line2 radical_line(const Circle2& c1, const Circle2& c2) {
+    return Line2(CGAL::radical_line(c1.c, c2.c));
+}
+
+// ============================================================
+// RIGHT TURN
+// ============================================================
+bool right_turn_2(const Point2& p, const Point2& q, const Point2& r) {
+    return CGAL::right_turn(toP2(p), toP2(q), toP2(r));
+}
+
+// ============================================================
+// SCALAR PRODUCT
+// ============================================================
+double scalar_product_2(const Vector2& u, const Vector2& v) {
+    return CGAL::to_double(CGAL::scalar_product(u.v, v.v));
+}
+
+double scalar_product_3(const Vector3& u, const Vector3& v) {
+    return CGAL::to_double(CGAL::scalar_product(u.v, v.v));
+}
+
+// ============================================================
+// SIDE OF BOUNDED CIRCLE
+// ============================================================
+int side_of_bounded_circle_4(const Point2& p, const Point2& q,
+                              const Point2& r, const Point2& t) {
+    auto side = CGAL::side_of_bounded_circle(toP2(p), toP2(q), toP2(r), toP2(t));
+    if (side == CGAL::ON_BOUNDED_SIDE)   return 1;
+    if (side == CGAL::ON_UNBOUNDED_SIDE) return -1;
+    return 0;
+}
+
+int side_of_bounded_circle_3(const Point2& p, const Point2& q, const Point2& t) {
+    auto side = CGAL::side_of_bounded_circle(toP2(p), toP2(q), toP2(t));
+    if (side == CGAL::ON_BOUNDED_SIDE)   return 1;
+    if (side == CGAL::ON_UNBOUNDED_SIDE) return -1;
+    return 0;
+}
+
+// ============================================================
+// SIDE OF BOUNDED SPHERE
+// ============================================================
+int side_of_bounded_sphere_5(const Point3& p, const Point3& q, const Point3& r,
+                              const Point3& s, const Point3& t) {
+    auto side = CGAL::side_of_bounded_sphere(toP3(p), toP3(q), toP3(r), toP3(s), toP3(t));
+    if (side == CGAL::ON_BOUNDED_SIDE)   return 1;
+    if (side == CGAL::ON_UNBOUNDED_SIDE) return -1;
+    return 0;
+}
+
+int side_of_bounded_sphere_4(const Point3& p, const Point3& q,
+                              const Point3& r, const Point3& t) {
+    auto side = CGAL::side_of_bounded_sphere(toP3(p), toP3(q), toP3(r), toP3(t));
+    if (side == CGAL::ON_BOUNDED_SIDE)   return 1;
+    if (side == CGAL::ON_UNBOUNDED_SIDE) return -1;
+    return 0;
+}
+
+int side_of_bounded_sphere_3(const Point3& p, const Point3& q, const Point3& t) {
+    auto side = CGAL::side_of_bounded_sphere(toP3(p), toP3(q), toP3(t));
+    if (side == CGAL::ON_BOUNDED_SIDE)   return 1;
+    if (side == CGAL::ON_UNBOUNDED_SIDE) return -1;
+    return 0;
+}
+
+// ============================================================
+// SIDE OF ORIENTED CIRCLE
+// ============================================================
+int side_of_oriented_circle(const Point2& p, const Point2& q,
+                             const Point2& r, const Point2& test) {
+    auto side = CGAL::side_of_oriented_circle(toP2(p), toP2(q), toP2(r), toP2(test));
+    if (side == CGAL::ON_POSITIVE_SIDE) return 1;
+    if (side == CGAL::ON_NEGATIVE_SIDE) return -1;
+    return 0;
+}
+
+// ============================================================
+// SIDE OF ORIENTED SPHERE
+// ============================================================
+int side_of_oriented_sphere(const Point3& p, const Point3& q, const Point3& r,
+                             const Point3& s, const Point3& test) {
+    auto side = CGAL::side_of_oriented_sphere(
+        toP3(p), toP3(q), toP3(r), toP3(s), toP3(test));
+    if (side == CGAL::ON_POSITIVE_SIDE) return 1;
+    if (side == CGAL::ON_NEGATIVE_SIDE) return -1;
+    return 0;
+}
+
+// ============================================================
+// SQUARED AREA
+// ============================================================
+double squared_area_3(const Point3& p, const Point3& q, const Point3& r) {
+    return CGAL::to_double(CGAL::squared_area(toP3(p), toP3(q), toP3(r)));
+}
+
+// ============================================================
+// SQUARED DISTANCE 2D
+// ============================================================
+double squared_distance_pt2_pt2(const Point2& p, const Point2& q) {
+    return CGAL::to_double(CGAL::squared_distance(toP2(p), toP2(q)));
+}
+double squared_distance_pt2_line2(const Point2& p, const Line2& l) {
+    return CGAL::to_double(CGAL::squared_distance(toP2(p), l.l));
+}
+double squared_distance_pt2_ray2(const Point2& p, const Ray2& r) {
+    return CGAL::to_double(CGAL::squared_distance(toP2(p), r.r));
+}
+double squared_distance_pt2_seg2(const Point2& p, const Segment2& s) {
+    return CGAL::to_double(CGAL::squared_distance(toP2(p), s.s));
+}
+double squared_distance_pt2_tri2(const Point2& p, const Triangle2& t) {
+    return CGAL::to_double(CGAL::squared_distance(toP2(p), t.t));
+}
+double squared_distance_line2_line2(const Line2& l1, const Line2& l2) {
+    return CGAL::to_double(CGAL::squared_distance(l1.l, l2.l));
+}
+double squared_distance_seg2_seg2(const Segment2& s1, const Segment2& s2) {
+    return CGAL::to_double(CGAL::squared_distance(s1.s, s2.s));
+}
+
+// ============================================================
+// SQUARED DISTANCE 3D
+// ============================================================
+double squared_distance_pt3_pt3(const Point3& p, const Point3& q) {
+    return CGAL::to_double(CGAL::squared_distance(toP3(p), toP3(q)));
+}
+double squared_distance_pt3_line3(const Point3& p, const Line3& l) {
+    return CGAL::to_double(CGAL::squared_distance(toP3(p), l.l));
+}
+double squared_distance_pt3_ray3(const Point3& p, const Ray3& r) {
+    return CGAL::to_double(CGAL::squared_distance(toP3(p), r.r));
+}
+double squared_distance_pt3_seg3(const Point3& p, const Segment3& s) {
+    return CGAL::to_double(CGAL::squared_distance(toP3(p), s.s));
+}
+double squared_distance_pt3_plane3(const Point3& p, const Plane3& pl) {
+    return CGAL::to_double(CGAL::squared_distance(toP3(p), pl.p));
+}
+double squared_distance_pt3_tri3(const Point3& p, const Triangle3& t) {
+    return CGAL::to_double(CGAL::squared_distance(toP3(p), t.t));
+}
+double squared_distance_line3_line3(const Line3& l1, const Line3& l2) {
+    return CGAL::to_double(CGAL::squared_distance(l1.l, l2.l));
+}
+double squared_distance_seg3_seg3(const Segment3& s1, const Segment3& s2) {
+    return CGAL::to_double(CGAL::squared_distance(s1.s, s2.s));
+}
+double squared_distance_tri3_tri3(const Triangle3& t1, const Triangle3& t2) {
+    return CGAL::to_double(CGAL::squared_distance(t1.t, t2.t));
+}
+
+// ============================================================
+// SQUARED RADIUS
+// ============================================================
+double squared_radius_pt2_3(const Point2& p, const Point2& q, const Point2& r) {
+    return CGAL::to_double(CGAL::squared_radius(toP2(p), toP2(q), toP2(r)));
+}
+double squared_radius_pt2_2(const Point2& p, const Point2& q) {
+    return CGAL::to_double(CGAL::squared_radius(toP2(p), toP2(q)));
+}
+double squared_radius_pt2_1(const Point2& p) {
+    return CGAL::to_double(CGAL::squared_radius(toP2(p)));
+}
+double squared_radius_pt3_4(const Point3& p, const Point3& q,
+                             const Point3& r, const Point3& s) {
+    return CGAL::to_double(CGAL::squared_radius(toP3(p), toP3(q), toP3(r), toP3(s)));
+}
+double squared_radius_pt3_3(const Point3& p, const Point3& q, const Point3& r) {
+    return CGAL::to_double(CGAL::squared_radius(toP3(p), toP3(q), toP3(r)));
+}
+double squared_radius_pt3_2(const Point3& p, const Point3& q) {
+    return CGAL::to_double(CGAL::squared_radius(toP3(p), toP3(q)));
+}
+double squared_radius_pt3_1(const Point3& p) {
+    return CGAL::to_double(CGAL::squared_radius(toP3(p)));
+}
+
+// ============================================================
+// UNIT NORMAL
+// ============================================================
+Vector3 unit_normal_3(const Point3& p, const Point3& q, const Point3& r) {
+    auto v = CGAL::unit_normal(toP3(p), toP3(q), toP3(r));
+    return Vector3(CGAL::to_double(v.x()),
+                   CGAL::to_double(v.y()),
+                   CGAL::to_double(v.z()));
+}
+
+// ============================================================
+// VOLUME
+// ============================================================
+double volume_3(const Point3& p0, const Point3& p1,
+                const Point3& p2, const Point3& p3) {
+    return CGAL::to_double(CGAL::volume(toP3(p0), toP3(p1), toP3(p2), toP3(p3)));
+}
+
+// ============================================================
+// X/Y/Z EQUAL
+// ============================================================
+bool x_equal_2(const Point2& p, const Point2& q) { return CGAL::x_equal(toP2(p), toP2(q)); }
+bool x_equal_3(const Point3& p, const Point3& q) { return CGAL::x_equal(toP3(p), toP3(q)); }
+bool y_equal_2(const Point2& p, const Point2& q) { return CGAL::y_equal(toP2(p), toP2(q)); }
+bool y_equal_3(const Point3& p, const Point3& q) { return CGAL::y_equal(toP3(p), toP3(q)); }
+bool z_equal_3(const Point3& p, const Point3& q) { return CGAL::z_equal(toP3(p), toP3(q)); }

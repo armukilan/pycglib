@@ -218,15 +218,18 @@ py::class_<Vector2>(m, "Vector2")
 
 
     // Orientation
-    py::class_<OrientationResult>(m, "OrientationResult")
-    .def("left_turn",  &OrientationResult::left_turn)
-    .def("right_turn", &OrientationResult::right_turn)
-    .def("collinear",  &OrientationResult::collinear)
-    .def("__repr__",   &OrientationResult::str);
+    // py::class_<OrientationResult>(m, "OrientationResult")
+    // .def("left_turn",  &OrientationResult::left_turn)
+    // .def("right_turn", &OrientationResult::right_turn)
+    // .def("collinear",  &OrientationResult::collinear)
+    // .def("__repr__",   &OrientationResult::str);
 
-    m.def("orientation", &orientation_2,
-          py::arg("p1"), py::arg("p2"), py::arg("p3"),
-          "Returns orientation of three Point2 objects");
+    // m.def("orientation", &orientation_2,
+    //       py::arg("p1"), py::arg("p2"), py::arg("p3"),
+    //       "Returns orientation of three Point2 objects");
+
+
+    
 
     // --- Bbox2 ---
     // py::class_<Bbox2>(m, "Bbox2")
@@ -1934,5 +1937,155 @@ m.def("midpoint", &midpoint_seg3, py::arg("s"));
 m.def("normal", &normal_3,
       py::arg("p"), py::arg("q"), py::arg("r"),
       "Normal vector for vectors q-p and r-p");
+
+// --- orthogonal_vector ---
+m.def("orthogonal_vector", &orthogonal_vector_plane,
+      py::arg("p"), "Orthogonal vector of a plane");
+m.def("orthogonal_vector", &orthogonal_vector_pts,
+      py::arg("p"), py::arg("q"), py::arg("r"),
+      "Orthogonal vector of plane through p,q,r");
+
+// --- orientation (global) ---
+// Returns: 1=POSITIVE/LEFT_TURN, -1=NEGATIVE/RIGHT_TURN, 0=COLLINEAR/COPLANAR
+m.def("orientation", &orientation_pt2,
+      py::arg("p"), py::arg("q"), py::arg("r"),
+      "Orientation of three 2D points. Returns 1, -1, or 0");
+m.def("orientation", &orientation_vec2,
+      py::arg("u"), py::arg("v"),
+      "Orientation of two 2D vectors");
+m.def("orientation", &orientation_pt3,
+      py::arg("p"), py::arg("q"), py::arg("r"), py::arg("s"),
+      "Orientation of four 3D points");
+m.def("orientation", &orientation_vec3,
+      py::arg("u"), py::arg("v"), py::arg("w"),
+      "Orientation of three 3D vectors");
+
+// --- parallel ---
+m.def("parallel", &parallel_line2,  py::arg("l1"), py::arg("l2"));
+m.def("parallel", &parallel_ray2,   py::arg("r1"), py::arg("r2"));
+m.def("parallel", &parallel_seg2,   py::arg("s1"), py::arg("s2"));
+m.def("parallel", &parallel_line3,  py::arg("l1"), py::arg("l2"));
+m.def("parallel", &parallel_plane3, py::arg("h1"), py::arg("h2"));
+m.def("parallel", &parallel_ray3,   py::arg("r1"), py::arg("r2"));
+m.def("parallel", &parallel_seg3,   py::arg("s1"), py::arg("s2"));
+
+// --- radical_plane / radical_line ---
+m.def("radical_plane", &radical_plane,
+      py::arg("s1"), py::arg("s2"),
+      "Radical plane of two spheres");
+m.def("radical_line", &radical_line,
+      py::arg("c1"), py::arg("c2"),
+      "Radical line of two circles");
+
+// --- right_turn ---
+m.def("right_turn", &right_turn_2,
+      py::arg("p"), py::arg("q"), py::arg("r"),
+      "True iff p, q, r form a right turn");
+
+// --- scalar_product ---
+m.def("scalar_product", &scalar_product_2,
+      py::arg("u"), py::arg("v"), "Scalar product of two 2D vectors");
+m.def("scalar_product", &scalar_product_3,
+      py::arg("u"), py::arg("v"), "Scalar product of two 3D vectors");
+
+// --- side_of_bounded_circle ---
+m.def("side_of_bounded_circle", &side_of_bounded_circle_4,
+      py::arg("p"), py::arg("q"), py::arg("r"), py::arg("t"),
+      "Side of bounded circle through p,q,r on which t lies. Returns 1, 0, -1");
+m.def("side_of_bounded_circle", &side_of_bounded_circle_3,
+      py::arg("p"), py::arg("q"), py::arg("t"),
+      "Side of circle with diameter pq on which t lies");
+
+// --- side_of_bounded_sphere ---
+m.def("side_of_bounded_sphere", &side_of_bounded_sphere_5,
+      py::arg("p"), py::arg("q"), py::arg("r"), py::arg("s"), py::arg("t"));
+m.def("side_of_bounded_sphere", &side_of_bounded_sphere_4,
+      py::arg("p"), py::arg("q"), py::arg("r"), py::arg("t"));
+m.def("side_of_bounded_sphere", &side_of_bounded_sphere_3,
+      py::arg("p"), py::arg("q"), py::arg("t"));
+
+// --- side_of_oriented_circle ---
+m.def("side_of_oriented_circle", &side_of_oriented_circle,
+      py::arg("p"), py::arg("q"), py::arg("r"), py::arg("test"),
+      "Oriented side of circle through p,q,r on which test lies. Returns 1, 0, -1");
+
+// --- side_of_oriented_sphere ---
+m.def("side_of_oriented_sphere", &side_of_oriented_sphere,
+      py::arg("p"), py::arg("q"), py::arg("r"), py::arg("s"), py::arg("test"),
+      "Oriented side of sphere through p,q,r,s on which test lies");
+
+// --- squared_area ---
+m.def("squared_area", &squared_area_3,
+      py::arg("p"), py::arg("q"), py::arg("r"),
+      "Squared area of 3D triangle");
+
+// --- squared_distance 2D ---
+m.def("squared_distance", &squared_distance_pt2_pt2,
+      py::arg("p"), py::arg("q"));
+m.def("squared_distance", &squared_distance_pt2_line2,
+      py::arg("p"), py::arg("l"));
+m.def("squared_distance", &squared_distance_pt2_ray2,
+      py::arg("p"), py::arg("r"));
+m.def("squared_distance", &squared_distance_pt2_seg2,
+      py::arg("p"), py::arg("s"));
+m.def("squared_distance", &squared_distance_pt2_tri2,
+      py::arg("p"), py::arg("t"));
+m.def("squared_distance", &squared_distance_line2_line2,
+      py::arg("l1"), py::arg("l2"));
+m.def("squared_distance", &squared_distance_seg2_seg2,
+      py::arg("s1"), py::arg("s2"));
+
+// --- squared_distance 3D ---
+m.def("squared_distance", &squared_distance_pt3_pt3,
+      py::arg("p"), py::arg("q"));
+m.def("squared_distance", &squared_distance_pt3_line3,
+      py::arg("p"), py::arg("l"));
+m.def("squared_distance", &squared_distance_pt3_ray3,
+      py::arg("p"), py::arg("r"));
+m.def("squared_distance", &squared_distance_pt3_seg3,
+      py::arg("p"), py::arg("s"));
+m.def("squared_distance", &squared_distance_pt3_plane3,
+      py::arg("p"), py::arg("pl"));
+m.def("squared_distance", &squared_distance_pt3_tri3,
+      py::arg("p"), py::arg("t"));
+m.def("squared_distance", &squared_distance_line3_line3,
+      py::arg("l1"), py::arg("l2"));
+m.def("squared_distance", &squared_distance_seg3_seg3,
+      py::arg("s1"), py::arg("s2"));
+m.def("squared_distance", &squared_distance_tri3_tri3,
+      py::arg("t1"), py::arg("t2"));
+
+// --- squared_radius ---
+m.def("squared_radius", &squared_radius_pt2_3,
+      py::arg("p"), py::arg("q"), py::arg("r"));
+m.def("squared_radius", &squared_radius_pt2_2,
+      py::arg("p"), py::arg("q"));
+m.def("squared_radius", &squared_radius_pt2_1,
+      py::arg("p"));
+m.def("squared_radius", &squared_radius_pt3_4,
+      py::arg("p"), py::arg("q"), py::arg("r"), py::arg("s"));
+m.def("squared_radius", &squared_radius_pt3_3,
+      py::arg("p"), py::arg("q"), py::arg("r"));
+m.def("squared_radius", &squared_radius_pt3_2,
+      py::arg("p"), py::arg("q"));
+m.def("squared_radius", &squared_radius_pt3_1,
+      py::arg("p"));
+
+// --- unit_normal ---
+m.def("unit_normal", &unit_normal_3,
+      py::arg("p"), py::arg("q"), py::arg("r"),
+      "Unit normal vector for vectors q-p and r-p");
+
+// --- volume ---
+m.def("volume", &volume_3,
+      py::arg("p0"), py::arg("p1"), py::arg("p2"), py::arg("p3"),
+      "Signed volume of tetrahedron defined by four 3D points");
+
+// --- x/y/z equal ---
+m.def("x_equal", &x_equal_2, py::arg("p"), py::arg("q"));
+m.def("x_equal", &x_equal_3, py::arg("p"), py::arg("q"));
+m.def("y_equal", &y_equal_2, py::arg("p"), py::arg("q"));
+m.def("y_equal", &y_equal_3, py::arg("p"), py::arg("q"));
+m.def("z_equal", &z_equal_3, py::arg("p"), py::arg("q"));
 
 }

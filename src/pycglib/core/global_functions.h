@@ -471,3 +471,136 @@ Point3 midpoint_seg3(const Segment3& s);
 // NORMAL
 // ============================================================
 Vector3 normal_3(const Point3& p, const Point3& q, const Point3& r);
+
+
+// ============================================================
+// ORTHOGONAL VECTOR
+// ============================================================
+Vector3 orthogonal_vector_plane(const Plane3& p);
+Vector3 orthogonal_vector_pts(const Point3& p, const Point3& q, const Point3& r);
+
+// ============================================================
+// ORIENTATION (global functions — replaces our old OrientationResult)
+// ============================================================
+int orientation_pt2(const Point2& p, const Point2& q, const Point2& r);
+int orientation_vec2(const Vector2& u, const Vector2& v);
+int orientation_pt3(const Point3& p, const Point3& q,
+                    const Point3& r, const Point3& s);
+int orientation_vec3(const Vector3& u, const Vector3& v, const Vector3& w);
+
+// ============================================================
+// PARALLEL
+// ============================================================
+bool parallel_line2(const Line2& l1, const Line2& l2);
+bool parallel_ray2(const Ray2& r1, const Ray2& r2);
+bool parallel_seg2(const Segment2& s1, const Segment2& s2);
+bool parallel_line3(const Line3& l1, const Line3& l2);
+bool parallel_plane3(const Plane3& h1, const Plane3& h2);
+bool parallel_ray3(const Ray3& r1, const Ray3& r2);
+bool parallel_seg3(const Segment3& s1, const Segment3& s2);
+
+// ============================================================
+// RADICAL PLANE / LINE
+// ============================================================
+Plane3 radical_plane(const Sphere3& s1, const Sphere3& s2);
+Line2  radical_line(const Circle2& c1, const Circle2& c2);
+
+// ============================================================
+// RIGHT TURN
+// ============================================================
+bool right_turn_2(const Point2& p, const Point2& q, const Point2& r);
+
+// ============================================================
+// SCALAR PRODUCT
+// ============================================================
+double scalar_product_2(const Vector2& u, const Vector2& v);
+double scalar_product_3(const Vector3& u, const Vector3& v);
+
+// ============================================================
+// SIDE OF BOUNDED CIRCLE
+// ============================================================
+int side_of_bounded_circle_4(const Point2& p, const Point2& q,
+                              const Point2& r, const Point2& t);
+int side_of_bounded_circle_3(const Point2& p, const Point2& q, const Point2& t);
+
+// ============================================================
+// SIDE OF BOUNDED SPHERE
+// ============================================================
+int side_of_bounded_sphere_5(const Point3& p, const Point3& q, const Point3& r,
+                              const Point3& s, const Point3& t);
+int side_of_bounded_sphere_4(const Point3& p, const Point3& q,
+                              const Point3& r, const Point3& t);
+int side_of_bounded_sphere_3(const Point3& p, const Point3& q, const Point3& t);
+
+// ============================================================
+// SIDE OF ORIENTED CIRCLE
+// ============================================================
+int side_of_oriented_circle(const Point2& p, const Point2& q,
+                             const Point2& r, const Point2& test);
+
+// ============================================================
+// SIDE OF ORIENTED SPHERE
+// ============================================================
+int side_of_oriented_sphere(const Point3& p, const Point3& q, const Point3& r,
+                             const Point3& s, const Point3& test);
+
+// ============================================================
+// SQUARED AREA
+// ============================================================
+double squared_area_3(const Point3& p, const Point3& q, const Point3& r);
+
+// ============================================================
+// SQUARED DISTANCE 2D
+// ============================================================
+double squared_distance_pt2_pt2(const Point2& p, const Point2& q);
+double squared_distance_pt2_line2(const Point2& p, const Line2& l);
+double squared_distance_pt2_ray2(const Point2& p, const Ray2& r);
+double squared_distance_pt2_seg2(const Point2& p, const Segment2& s);
+double squared_distance_pt2_tri2(const Point2& p, const Triangle2& t);
+double squared_distance_line2_line2(const Line2& l1, const Line2& l2);
+double squared_distance_seg2_seg2(const Segment2& s1, const Segment2& s2);
+
+// ============================================================
+// SQUARED DISTANCE 3D
+// ============================================================
+double squared_distance_pt3_pt3(const Point3& p, const Point3& q);
+double squared_distance_pt3_line3(const Point3& p, const Line3& l);
+double squared_distance_pt3_ray3(const Point3& p, const Ray3& r);
+double squared_distance_pt3_seg3(const Point3& p, const Segment3& s);
+double squared_distance_pt3_plane3(const Point3& p, const Plane3& pl);
+double squared_distance_pt3_tri3(const Point3& p, const Triangle3& t);
+double squared_distance_line3_line3(const Line3& l1, const Line3& l2);
+double squared_distance_seg3_seg3(const Segment3& s1, const Segment3& s2);
+double squared_distance_tri3_tri3(const Triangle3& t1, const Triangle3& t2);
+
+// ============================================================
+// SQUARED RADIUS
+// ============================================================
+double squared_radius_pt2_3(const Point2& p, const Point2& q, const Point2& r);
+double squared_radius_pt2_2(const Point2& p, const Point2& q);
+double squared_radius_pt2_1(const Point2& p);
+double squared_radius_pt3_4(const Point3& p, const Point3& q,
+                             const Point3& r, const Point3& s);
+double squared_radius_pt3_3(const Point3& p, const Point3& q, const Point3& r);
+double squared_radius_pt3_2(const Point3& p, const Point3& q);
+double squared_radius_pt3_1(const Point3& p);
+
+// ============================================================
+// UNIT NORMAL
+// ============================================================
+Vector3 unit_normal_3(const Point3& p, const Point3& q, const Point3& r);
+
+// ============================================================
+// VOLUME
+// ============================================================
+double volume_3(const Point3& p0, const Point3& p1,
+                const Point3& p2, const Point3& p3);
+
+// ============================================================
+// X/Y/Z EQUAL
+// ============================================================
+bool x_equal_2(const Point2& p, const Point2& q);
+bool x_equal_3(const Point3& p, const Point3& q);
+bool y_equal_2(const Point2& p, const Point2& q);
+bool y_equal_3(const Point3& p, const Point3& q);
+bool z_equal_3(const Point3& p, const Point3& q);
