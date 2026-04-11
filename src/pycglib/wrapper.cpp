@@ -81,10 +81,12 @@
 #include "core/global_functions.h"
 #include <pybind11/stl.h>
 #include "core/polygon2.h"
+#include "core/triangulation2.h"
+#include "core/delaunay2.h"
 
 // ============================================================
 // ADD TO INCLUDES at top of cgal_wrapper.cpp:
-# include "core/triangulation2.h"
+
 // ============================================================
 
 // Declared from original/distance.cpp
@@ -2302,6 +2304,158 @@ py::class_<Triangulation2>(m, "Triangulation2")
     .def("__repr__", [](const Triangulation2& t) {
         return "Triangulation2(vertices=" + std::to_string(t2_number_of_vertices(t))
              + ", faces=" + std::to_string(t2_number_of_faces(t)) + ")";
+    });
+
+
+// ============================================================
+// ADD TO INCLUDES at top of cgal_wrapper.cpp:
+//
+// Paste the block below inside PYBIND11_MODULE, AFTER the
+// Triangulation2 / VertexHandle2 / FaceHandle2 / EdgeHandle2 blocks.
+// ============================================================
+
+py::class_<DelaunayTriangulation2>(m, "DelaunayTriangulation2")
+    .def(py::init<>())
+
+    // ── Access ────────────────────────────────────────────────────────────
+    .def("dimension",           &dt2_dimension)
+    .def("number_of_vertices",  &dt2_number_of_vertices)
+    .def("number_of_faces",     &dt2_number_of_faces)
+    .def("is_valid",            &dt2_is_valid,           py::arg("verbose") = false)
+    .def("clear",               &dt2_clear)
+    .def("swap",                &dt2_swap,               py::arg("other"))
+    .def("infinite_vertex",     &dt2_infinite_vertex)
+    .def("infinite_face",       &dt2_infinite_face)
+    .def("finite_vertex",       &dt2_finite_vertex)
+
+    // ── Insert ────────────────────────────────────────────────────────────
+    .def("insert",
+         py::overload_cast<DelaunayTriangulation2&, const Point2&>
+         (&dt2_insert_point),
+         py::arg("p"))
+    .def("insert",
+         py::overload_cast<DelaunayTriangulation2&, const Point2&, const FaceHandle2&>
+         (&dt2_insert_point_hint),
+         py::arg("p"), py::arg("hint"))
+    .def("insert",
+         py::overload_cast<DelaunayTriangulation2&, const std::vector<Point2>&>
+         (&dt2_insert_points),
+         py::arg("points"))
+    .def("push_back", &dt2_push_back, py::arg("p"))
+
+    // ── Remove ────────────────────────────────────────────────────────────
+    .def("remove", &dt2_remove, py::arg("v"))
+
+    // ── Move ──────────────────────────────────────────────────────────────
+    .def("move",                 &dt2_move,                 py::arg("v"), py::arg("p"))
+    .def("move_if_no_collision", &dt2_move_if_no_collision, py::arg("v"), py::arg("p"))
+
+    // ── Locate ────────────────────────────────────────────────────────────
+    .def("locate",
+         py::overload_cast<const DelaunayTriangulation2&, const Point2&>
+         (&dt2_locate), py::arg("query"))
+    .def("locate",
+         py::overload_cast<const DelaunayTriangulation2&, const Point2&, const FaceHandle2&>
+         (&dt2_locate_hint), py::arg("query"), py::arg("hint"))
+    .def("locate_full",    &dt2_locate_full,    py::arg("query"))
+    .def("inexact_locate", &dt2_inexact_locate, py::arg("query"))
+
+    // ── Nearest vertex ────────────────────────────────────────────────────
+    .def("nearest_vertex",
+         py::overload_cast<const DelaunayTriangulation2&, const Point2&>
+         (&dt2_nearest_vertex), py::arg("p"))
+    .def("nearest_vertex",
+         py::overload_cast<const DelaunayTriangulation2&, const Point2&, const FaceHandle2&>
+         (&dt2_nearest_vertex_hint), py::arg("p"), py::arg("hint"))
+
+    // ── Conflict zone ─────────────────────────────────────────────────────
+    .def("get_conflicts",                &dt2_get_conflicts,                py::arg("p"))
+    .def("get_boundary_of_conflicts",    &dt2_get_boundary_of_conflicts,    py::arg("p"))
+    .def("get_conflicts_and_boundary",   &dt2_get_conflicts_and_boundary,   py::arg("p"))
+
+    // ── Voronoi diagram ───────────────────────────────────────────────────
+    .def("dual_point",   &dt2_dual_point,   py::arg("f"),
+         "Voronoi vertex dual to face f. Returns circumcenter as Point2.")
+    .def("dual_type",    &dt2_dual_type,    py::arg("e"),
+         "Returns 'segment', 'ray', or 'line' — type of Voronoi edge dual to e.\n"
+         "Call this before dual_segment/dual_ray/dual_line to avoid None returns.")
+    .def("dual_segment", &dt2_dual_segment, py::arg("e"),
+         "Returns Segment2 (Voronoi edge) when both adjacent faces are finite.\n"
+         "Returns None when dual_type(e) is 'ray' or 'line'.")
+    .def("dual_ray",     &dt2_dual_ray,     py::arg("e"),
+         "Returns Ray2 (Voronoi edge) when exactly one adjacent face is finite.\n"
+         "Returns None when dual_type(e) is 'segment' or 'line'.")
+    .def("dual_line",    &dt2_dual_line,    py::arg("e"),
+         "Returns Line2 (Voronoi edge) for collinear degenerate triangulations.\n"
+         "Returns None for all normal 2D triangulations.")
+
+    // ── Predicates ────────────────────────────────────────────────────────
+    .def("side_of_oriented_circle", &dt2_side_of_oriented_circle,
+         py::arg("f"), py::arg("p"))
+    .def("oriented_side",           &dt2_oriented_side,
+         py::arg("f"), py::arg("p"))
+    .def("is_infinite",
+         py::overload_cast<const DelaunayTriangulation2&, const VertexHandle2&>
+         (&dt2_is_infinite_vertex), py::arg("v"))
+    .def("is_infinite",
+         py::overload_cast<const DelaunayTriangulation2&, const FaceHandle2&>
+         (&dt2_is_infinite_face), py::arg("f"))
+    .def("is_infinite",
+         py::overload_cast<const DelaunayTriangulation2&, const FaceHandle2&, int>
+         (&dt2_is_infinite_edge), py::arg("f"), py::arg("i"))
+    .def("is_edge",
+         py::overload_cast<const DelaunayTriangulation2&, const VertexHandle2&, const VertexHandle2&>
+         (&dt2_is_edge), py::arg("va"), py::arg("vb"))
+    .def("is_edge_full",  &dt2_is_edge_full,  py::arg("va"), py::arg("vb"))
+    .def("is_face",       &dt2_is_face3,      py::arg("v1"), py::arg("v2"), py::arg("v3"))
+    .def("is_face_full",  &dt2_is_face3_full, py::arg("v1"), py::arg("v2"), py::arg("v3"))
+
+    // ── Geometry ──────────────────────────────────────────────────────────
+    .def("triangle",     &dt2_triangle,      py::arg("f"))
+    .def("segment",
+         py::overload_cast<const DelaunayTriangulation2&, const FaceHandle2&, int>
+         (&dt2_segment_face_i), py::arg("f"), py::arg("i"))
+    .def("segment",
+         py::overload_cast<const DelaunayTriangulation2&, const EdgeHandle2&>
+         (&dt2_segment_edge), py::arg("e"))
+    .def("circumcenter",  &dt2_circumcenter,  py::arg("f"))
+    .def("point",
+         py::overload_cast<const DelaunayTriangulation2&, const FaceHandle2&, int>
+         (&dt2_point_face_i), py::arg("f"), py::arg("i"))
+    .def("point",
+         py::overload_cast<const DelaunayTriangulation2&, const VertexHandle2&>
+         (&dt2_point_vertex), py::arg("v"))
+    .def("ccw", &dt2_ccw, py::arg("i"))
+    .def("cw",  &dt2_cw,  py::arg("i"))
+
+    // ── Adjacency ─────────────────────────────────────────────────────────
+    .def("mirror_vertex", &dt2_mirror_vertex, py::arg("f"), py::arg("i"))
+    .def("mirror_index",  &dt2_mirror_index,  py::arg("f"), py::arg("i"))
+    .def("mirror_edge",   &dt2_mirror_edge,   py::arg("e"))
+
+    // ── Iterators → list ──────────────────────────────────────────────────
+    .def("finite_vertices", &dt2_finite_vertices)
+    .def("finite_faces",    &dt2_finite_faces)
+    .def("finite_edges",    &dt2_finite_edges)
+    .def("points",          &dt2_points)
+    .def("all_vertices",    &dt2_all_vertices)
+    .def("all_faces",       &dt2_all_faces)
+    .def("all_edges",       &dt2_all_edges)
+
+    // ── Circulators → list ────────────────────────────────────────────────
+    .def("incident_faces",    &dt2_incident_faces,    py::arg("v"))
+    .def("incident_edges",    &dt2_incident_edges,    py::arg("v"))
+    .def("incident_vertices", &dt2_incident_vertices, py::arg("v"))
+    .def("line_walk",         &dt2_line_walk,         py::arg("p"), py::arg("q"))
+
+    // ── Convex hull ───────────────────────────────────────────────────────
+    .def("convex_hull_vertices", &dt2_convex_hull_vertices)
+    .def("convex_hull_edges",    &dt2_convex_hull_edges)
+
+    .def("__repr__", [](const DelaunayTriangulation2& dt) {
+        return "DelaunayTriangulation2(vertices=" +
+               std::to_string(dt2_number_of_vertices(dt)) +
+               ", faces=" + std::to_string(dt2_number_of_faces(dt)) + ")";
     });
 
 }
